@@ -1,0 +1,425 @@
+uuid: 898b7385-7f2b-4812-8f3b-41b6d6223b4c
+name: Rust
+description: A clean Rust Dedicated Server using the official Pterodactyl Rust image, SteamCMD installation, optional Carbon/Oxide
+  support, and native Calagopus variables.
+author: GIGABAIT
+config:
+  files: {}
+  startup:
+    done:
+    - Server startup complete
+    strip_ansi: false
+  stop:
+    type: command
+    value: quit
+scripts:
+  installation:
+    container: ghcr.io/pterodactyl/installers:debian
+    entrypoint: bash
+    content: |
+      #!/bin/bash
+      set -euo pipefail
+
+      steam_archive="$(mktemp)"
+      trap 'rm -f "${steam_archive}"' EXIT
+      mkdir -p /mnt/server/steamcmd /mnt/server/steamapps
+      curl -fL --retry 3 --retry-delay 2 -o "${steam_archive}" https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz
+      tar -xzf "${steam_archive}" -C /mnt/server/steamcmd
+      HOME=/mnt/server /mnt/server/steamcmd/steamcmd.sh +force_install_dir /mnt/server +login anonymous +app_update 258550 ${SRCDS_BETAID:+-beta ${SRCDS_BETAID}} validate +quit
+      mkdir -p /mnt/server/.steam/sdk32 /mnt/server/.steam/sdk64
+      cp /mnt/server/steamcmd/linux32/steamclient.so /mnt/server/.steam/sdk32/steamclient.so
+      cp /mnt/server/steamcmd/linux64/steamclient.so /mnt/server/.steam/sdk64/steamclient.so
+      mkdir -p /mnt/server/server
+      echo "Installed Rust Dedicated Server."
+startup_commands:
+  Procedural Map: exec ./RustDedicated -batchmode -nographics +server.port {{SERVER_PORT}} +server.queryport {{QUERY_PORT}}
+    +server.identity "{{SERVER_IDENTITY}}" +server.gamemode "{{GAMEMODE}}" +rcon.port {{RCON_PORT}} +rcon.ip 0.0.0.0 +rcon.web
+    true +server.hostname "{{HOSTNAME}}" +server.description "{{DESCRIPTION}}" +server.url "{{SERVER_URL}}" +server.headerimage
+    "{{SERVER_IMG}}" +server.logoimage "{{SERVER_LOGO}}" +server.maxplayers {{MAX_PLAYERS}} +rcon.password "{{RCON_PASS}}"
+    +server.saveinterval {{SAVEINTERVAL}} +app.port {{APP_PORT}} +app.publicip "{{APP_PUBLIC_IP}}" +server.tags "{{SERVER_TAGS}}"
+    -logfile logs/server.log +server.level "{{LEVEL}}" +server.worldsize {{WORLD_SIZE}} +server.seed "{{WORLD_SEED}}" {{ADDITIONAL_ARGS}}
+  Custom Map: exec ./RustDedicated -batchmode -nographics +server.port {{SERVER_PORT}} +server.queryport {{QUERY_PORT}} +server.identity
+    "{{SERVER_IDENTITY}}" +server.gamemode "{{GAMEMODE}}" +rcon.port {{RCON_PORT}} +rcon.ip 0.0.0.0 +rcon.web true +server.hostname
+    "{{HOSTNAME}}" +server.description "{{DESCRIPTION}}" +server.url "{{SERVER_URL}}" +server.headerimage "{{SERVER_IMG}}"
+    +server.logoimage "{{SERVER_LOGO}}" +server.maxplayers {{MAX_PLAYERS}} +rcon.password "{{RCON_PASS}}" +server.saveinterval
+    {{SAVEINTERVAL}} +app.port {{APP_PORT}} +app.publicip "{{APP_PUBLIC_IP}}" +server.tags "{{SERVER_TAGS}}" -logfile logs/server.log
+    +server.levelurl "{{MAP_URL}}" {{ADDITIONAL_ARGS}}
+force_outgoing_ip: false
+separate_port: false
+features: []
+docker_images:
+  Rust: ghcr.io/pterodactyl/games:rust
+file_denylist: []
+variables:
+- name: Modding Framework
+  name_translations:
+    uk: Фреймворк модифікацій
+  description: Runtime framework managed by the official Pterodactyl Rust image.
+  description_translations:
+    uk: Фреймворк, яким керує офіційний Rust-образ Pterodactyl.
+  order: 0
+  env_variable: FRAMEWORK
+  default_value: vanilla
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - string
+  - in:vanilla,carbon,oxide
+- name: Automatic Updates
+  name_translations:
+    uk: Автоматичні оновлення
+  description: Update the stable Rust branch through SteamCMD when the official runtime image starts.
+  description_translations:
+    uk: Оновлювати стабільну гілку Rust через SteamCMD під час запуску офіційного runtime-образу.
+  order: 1
+  env_variable: AUTO_UPDATE
+  default_value: '1'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: Steam Branch
+  name_translations:
+    uk: Гілка Steam
+  description: Optional beta branch used during installation. Disable Automatic Updates for beta branches because the runtime
+    updater targets stable.
+  description_translations:
+    uk: Необов'язкова beta-гілка для встановлення. Для beta-гілок вимкніть автоматичні оновлення, бо runtime-updater оновлює
+      stable.
+  order: 2
+  env_variable: SRCDS_BETAID
+  default_value: ''
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - nullable
+  - string
+  - max:64
+- name: Server Name
+  name_translations:
+    uk: Назва сервера
+  description: Name displayed in the Rust server list.
+  description_translations:
+    uk: Назва у списку серверів Rust.
+  order: 3
+  env_variable: HOSTNAME
+  default_value: A Rust Server
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - string
+  - max:64
+- name: Description
+  name_translations:
+    uk: Опис
+  description: Description displayed in the Rust server list.
+  description_translations:
+    uk: Опис у списку серверів Rust.
+  order: 4
+  env_variable: DESCRIPTION
+  default_value: ''
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - nullable
+  - string
+  - max:1024
+- name: Website URL
+  name_translations:
+    uk: URL сайту
+  description: Optional server website URL.
+  description_translations:
+    uk: Необов'язковий URL сайту сервера.
+  order: 5
+  env_variable: SERVER_URL
+  default_value: ''
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - nullable
+  - url
+- name: Header Image
+  name_translations:
+    uk: Зображення заголовка
+  description: Optional direct URL to the server header image.
+  description_translations:
+    uk: Необов'язковий прямий URL зображення сервера.
+  order: 6
+  env_variable: SERVER_IMG
+  default_value: ''
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - nullable
+  - url
+- name: Logo Image
+  name_translations:
+    uk: Логотип
+  description: Optional direct URL to the server logo.
+  description_translations:
+    uk: Необов'язковий прямий URL логотипа сервера.
+  order: 7
+  env_variable: SERVER_LOGO
+  default_value: ''
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - nullable
+  - url
+- name: Server Tags
+  name_translations:
+    uk: Теги сервера
+  description: Comma-separated Rust browser tags.
+  description_translations:
+    uk: Теги браузера Rust через кому.
+  order: 8
+  env_variable: SERVER_TAGS
+  default_value: ''
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - nullable
+  - string
+  - max:128
+- name: Identity
+  name_translations:
+    uk: Ідентифікатор
+  description: Save directory identity.
+  description_translations:
+    uk: Ідентифікатор каталогу збережень.
+  order: 9
+  env_variable: SERVER_IDENTITY
+  default_value: rust
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - string
+  - regex:/^[A-Za-z0-9._-]+$/
+  - max:64
+- name: Game Mode
+  name_translations:
+    uk: Режим гри
+  description: Rust game mode.
+  description_translations:
+    uk: Режим гри Rust.
+  order: 10
+  env_variable: GAMEMODE
+  default_value: vanilla
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - string
+  - max:32
+- name: Level
+  name_translations:
+    uk: Тип карти
+  description: Rust level generator.
+  description_translations:
+    uk: Генератор карти Rust.
+  order: 11
+  env_variable: LEVEL
+  default_value: Procedural Map
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - string
+  - max:64
+- name: Maximum Players
+  name_translations:
+    uk: Максимум гравців
+  description: Maximum simultaneous players.
+  description_translations:
+    uk: Максимальна кількість одночасних гравців.
+  order: 12
+  env_variable: MAX_PLAYERS
+  default_value: '50'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - integer
+  - min:1
+  - max:1000
+- name: World Size
+  name_translations:
+    uk: Розмір світу
+  description: Procedural map size.
+  description_translations:
+    uk: Розмір процедурної карти.
+  order: 13
+  env_variable: WORLD_SIZE
+  default_value: '3500'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - integer
+  - min:1000
+  - max:6000
+- name: World Seed
+  name_translations:
+    uk: Seed світу
+  description: Procedural map seed.
+  description_translations:
+    uk: Seed процедурної карти.
+  order: 14
+  env_variable: WORLD_SEED
+  default_value: '0'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - string
+  - max:32
+- name: Custom Map URL
+  name_translations:
+    uk: URL власної карти
+  description: Direct URL required by the Custom Map startup profile.
+  description_translations:
+    uk: Прямий URL, обов'язковий для профілю запуску Custom Map.
+  order: 15
+  env_variable: MAP_URL
+  default_value: ''
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - nullable
+  - url
+- name: RCON Port
+  name_translations:
+    uk: Порт RCON
+  description: Allocated RCON port.
+  description_translations:
+    uk: Виділений порт RCON.
+  order: 16
+  env_variable: RCON_PORT
+  default_value: '28016'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - integer
+  - min:1
+  - max:65535
+- name: RCON Password
+  name_translations:
+    uk: Пароль RCON
+  description: RCON password.
+  description_translations:
+    uk: Пароль RCON.
+  order: 17
+  env_variable: RCON_PASS
+  default_value: change-me-now
+  user_viewable: true
+  user_editable: true
+  secret: true
+  rules:
+  - required
+  - string
+  - min:8
+  - max:64
+- name: Query Port
+  name_translations:
+    uk: Query-порт
+  description: Allocated Steam query port.
+  description_translations:
+    uk: Виділений Steam query-порт.
+  order: 18
+  env_variable: QUERY_PORT
+  default_value: '28017'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - integer
+  - min:1
+  - max:65535
+- name: Companion App Port
+  name_translations:
+    uk: Порт застосунку
+  description: Rust companion app port; -1 disables it.
+  description_translations:
+    uk: Порт застосунку Rust; -1 вимикає його.
+  order: 19
+  env_variable: APP_PORT
+  default_value: '28082'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - integer
+  - min:-1
+  - max:65535
+- name: Companion Public IP
+  name_translations:
+    uk: Публічна IP застосунку
+  description: Optional public IP advertised to the companion app.
+  description_translations:
+    uk: Необов'язкова публічна IP для застосунку.
+  order: 20
+  env_variable: APP_PUBLIC_IP
+  default_value: ''
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - nullable
+  - ip
+- name: Save Interval
+  name_translations:
+    uk: Інтервал збереження
+  description: Automatic save interval in seconds.
+  description_translations:
+    uk: Інтервал автозбереження у секундах.
+  order: 21
+  env_variable: SAVEINTERVAL
+  default_value: '300'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - integer
+  - min:30
+  - max:3600
+- name: Additional Arguments
+  name_translations:
+    uk: Додаткові аргументи
+  description: Advanced RustDedicated arguments.
+  description_translations:
+    uk: Додаткові аргументи RustDedicated.
+  order: 22
+  env_variable: ADDITIONAL_ARGS
+  default_value: ''
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - nullable
+  - string
+  - max:2048

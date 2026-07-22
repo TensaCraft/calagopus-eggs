@@ -1,0 +1,247 @@
+uuid: 73c0d9ee-667d-472a-80bb-8cd12912e5aa
+name: Velocity
+description: A modern Velocity proxy with verified PaperMC downloads, protected forwarding secret storage, and official Pterodactyl
+  Java images.
+author: GIGABAIT
+config:
+  files:
+    velocity.toml:
+      create_new: true
+      parser: file
+      replace:
+      - match: 'bind = '
+        insert_new: false
+        update_existing: true
+        if_value: null
+        replace_with: bind = "0.0.0.0:{{server.build.default.port}}"
+      - match: 'motd = '
+        insert_new: false
+        update_existing: true
+        if_value: null
+        replace_with: motd = "{{env.MOTD}}"
+      - match: 'show-max-players = '
+        insert_new: false
+        update_existing: true
+        if_value: null
+        replace_with: show-max-players = {{env.MAX_PLAYERS}}
+      - match: 'online-mode = '
+        insert_new: false
+        update_existing: true
+        if_value: null
+        replace_with: online-mode = {{env.ONLINE_MODE}}
+      - match: 'player-info-forwarding-mode = '
+        insert_new: false
+        update_existing: true
+        if_value: null
+        replace_with: player-info-forwarding-mode = "{{env.FORWARDING_MODE}}"
+      - match: 'forwarding-secret-file = '
+        insert_new: false
+        update_existing: true
+        if_value: null
+        replace_with: forwarding-secret-file = "forwarding.secret"
+  startup:
+    done:
+    - Done (
+    strip_ansi: false
+  stop:
+    type: command
+    value: end
+scripts:
+  installation:
+    container: ghcr.io/pterodactyl/installers:debian
+    entrypoint: bash
+    content: |
+      #!/bin/bash
+      set -euo pipefail
+
+      export DEBIAN_FRONTEND=noninteractive
+      apt-get update
+      apt-get install -y --no-install-recommends jq ca-certificates
+      rm -rf /var/lib/apt/lists/*
+      cd /mnt/server
+      project_json="$(curl -fsSL https://fill.papermc.io/v3/projects/velocity)"
+      if [[ "${VELOCITY_VERSION}" == "latest" ]]; then
+        version="$(jq -r '[.versions[] | .[] | select(test("SNAPSHOT"; "i") | not)][0]' <<<"${project_json}")"
+      else
+        version="${VELOCITY_VERSION}"
+      fi
+      [[ -n "${version}" && "${version}" != "null" ]] || { echo "No stable Velocity version found." >&2; exit 1; }
+
+      if [[ "${VELOCITY_BUILD}" == "latest" ]]; then
+        build_url="https://fill.papermc.io/v3/projects/velocity/versions/${version}/builds/latest"
+      else
+        build_url="https://fill.papermc.io/v3/projects/velocity/versions/${version}/builds/${VELOCITY_BUILD}"
+      fi
+      build_json="$(curl -fsSL "${build_url}")"
+      build="$(jq -er '.id' <<<"${build_json}")"
+      download_url="$(jq -er '.downloads["server:default"].url' <<<"${build_json}")"
+      expected_hash="$(jq -er '.downloads["server:default"].checksums.sha256' <<<"${build_json}")"
+      curl -fL --retry 3 --retry-delay 2 -o "${SERVER_JARFILE}.part" "${download_url}"
+      printf '%s  %s\n' "${expected_hash}" "${SERVER_JARFILE}.part" | sha256sum -c -
+      mv -f "${SERVER_JARFILE}.part" "${SERVER_JARFILE}"
+
+      case "${version}" in
+        4.*) config_branch="dev/4.0.0" ;;
+        *) config_branch="dev/3.0.0" ;;
+      esac
+      if [[ ! -s velocity.toml ]]; then
+        curl -fL --retry 3 --retry-delay 2 -o velocity.toml "https://raw.githubusercontent.com/PaperMC/Velocity/${config_branch}/proxy/src/main/resources/default-velocity.toml"
+      fi
+      printf '%s\n' "velocity ${version} build ${build}" > .egg-version
+      echo "Installed Velocity ${version} build ${build}."
+startup_commands:
+  Default: bash -c printf\${IFS}%s\${IFS}H4sIAAAAAAAAA22VybKj6BGF9/cp8O2270LRxSiG7qgOM4lBCBAgBpUrOpjF9IOYweV3t64dDm86VyczIofN+fKnv8BRAeAoHB5vRQZ9+wa9//xP9uYYf9xMgXXEX38Z+yn91zv09Sv0/infoe/ff4PGRwreIKjrCzBm0Mdfhw/oQyYGhf1fkKgbeXBoc8KBqumVCW+qayoaxobOwyiK83iri67FQvuZGIrjkbufohKc+GmqsDPM3FuMQ04L7MpJtqhUkqbhvfEyaabQVakJQrxLnXKv+IK51a62Fnwq3QPPqWfdON3JXNTQK28dzd3r3MWnXXGwG7p+CQtj01nQzUC6VY4uIdMN7atAcjdt7Ad+52o55yNYryp72xuOryupKO6uuDyL/RSjkceDlpOAsYXsssQPmWaWKFaUcxPARn5bY9EhNzpcnzdbCXww+9aWW6nE8lossNFBnOx1MWB+gbM78qij8/3sZloQp/e4890K2VVc7o+gU8sSbHqwPjjVAPIxOUquKoYlGunCRNLZpaZuPDlz1+212RjpSAwYbILxx4wQTL3MtK01JVMq/JKrXOsQyrUplUyUdwVtScWzzLXVg+1whs8CKAl1IfmgAeqSe+S5C6m2gHG4C/vFTy6XVpDKQCLC9ARHtHGOxOQGTIYEQEiQnGaTVFR5ERnsunDSc9pIQSrYRmbgPsOslg0nyQllr4FO+MOTfN6K3Fvg8dXP7wTbUx47YoKEChFnGsI8gIUL4gPZcg3v3CazpfUH5roIxex3ajeCSnGZoGGx2XGUC7iogJUo1psG3QeUBCOHSn2qTqeVic2S47AftjMv+c8av50Q64BVAOkDe74dcZdzp/BArGplzz3HKjDbNvxDR/D9kt9xibUoFxarDLG6eXkOktWq+rKE+dHwDF+/Ym2/5DkoqytQt0VzD/COEnPfwKnnm1iSaRg1aw19iErzNMBBWD0mc4nXZXk64YY/ZQSt/OBsOA8pvt+eTbCdgW4fMiveOstsOKEzTWXo1I0JLDXKnypBpE6kJUtcaqcLNR/rMB+fZUvGQ0of8PJApqTZbLBm93zd8jmojmMyn7zbs5ySSTfKqNM317wMoMSVmt4vPik3kZoT06YQQtghWKnm3SXMlcNWB5lJ8OLRdBiJICjZZvasHCyykxkE63C1sItgIYF0OZOwUQsNiqQiaKTVUvyLt6NaXFO0ZNe6NJMy22m4h1V0cea1xlFwPUpGTA3k5txfpye3xgOhuPZs5JYi60dg9PN1Zy5b0pTI0bqv1VCTnLhH7TzqITnWLZWeSHlNMuFK8dU4rgl+VqU7moFxpad+g7GVZO5sPQCCUxX1UaiAFE5j5uW6Ys5h67dnq4HXZpXtyRmvRu070sQE8xU8HsmOyQozTi+HXylfKJCTR5xQrh7CpL5c4QQ/7iidjCgyhohGkqEXVMYZprqAicM98VrOP2AedcUDK3vueLHmI9zf5Ts+jdGzD5Se3CgUeHWEDN1FfQ5yMScmzRZ9H8rX/JOXXz+gH9CLvylJQL8kL53vRfdf9Ull6McPKI0fLfTxjZ3GFrp1STim3yH+kcYVlIVFnSa/QcMY9mMB8k8wQ+laDP9JCvCq13U4Fi348gH9/jfsLa2H9AXuP5soFEMYvaZ9+XjLirepCYcKQijq7f+Q/wf4+HwPrqgZvOIEf9gib4nO6zn8DsGPtknhuAVjWIC0h7OXUcI+eV3xZUjjPh3f0jWNX91/f3/7N76Q8xB0BgAA\|base64\${IFS}-d\|gzip\${IFS}-d\|bash\${IFS}-s\${IFS}--\${IFS}java\${IFS}-Xms128M\${IFS}-Xmx{{SERVER_MEMORY}}M\${IFS}-Dterminal.jline=false\${IFS}-Dterminal.ansi=true\${IFS}-jar\${IFS}{{SERVER_JARFILE}}
+force_outgoing_ip: false
+separate_port: false
+features:
+- java_version
+docker_images:
+  Java 17: ghcr.io/pterodactyl/yolks:java_17
+  Java 21: ghcr.io/pterodactyl/yolks:java_21
+  Java 25: ghcr.io/pterodactyl/yolks:java_25
+file_denylist: []
+variables:
+- name: Velocity Version
+  name_translations:
+    uk: Версія Velocity
+  description: Exact stable Velocity version or latest.
+  description_translations:
+    uk: Точна стабільна версія Velocity або latest.
+  order: 0
+  env_variable: VELOCITY_VERSION
+  default_value: latest
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - string
+  - max:32
+- name: Velocity Build
+  name_translations:
+    uk: Збірка Velocity
+  description: Exact build number or latest.
+  description_translations:
+    uk: Точний номер збірки або latest.
+  order: 1
+  env_variable: VELOCITY_BUILD
+  default_value: latest
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - string
+  - max:32
+- name: Server Jar
+  name_translations:
+    uk: Файл сервера
+  description: Installed proxy jar filename.
+  description_translations:
+    uk: Назва jar-файлу проксі.
+  order: 2
+  env_variable: SERVER_JARFILE
+  default_value: velocity.jar
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - string
+  - regex:/^[A-Za-z0-9._-]+\.jar$/
+- name: MOTD
+  name_translations:
+    uk: Опис проксі
+  description: Message shown in the server list.
+  description_translations:
+    uk: Текст у списку серверів.
+  order: 3
+  env_variable: MOTD
+  default_value: A Velocity Proxy
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - string
+  - max:255
+- name: Maximum Players
+  name_translations:
+    uk: Максимум гравців
+  description: Player count displayed by the proxy.
+  description_translations:
+    uk: Кількість гравців, яку показує проксі.
+  order: 4
+  env_variable: MAX_PLAYERS
+  default_value: '500'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - integer
+  - min:1
+  - max:100000
+- name: Online Mode
+  name_translations:
+    uk: Онлайн-режим
+  description: Authenticate players at the proxy.
+  description_translations:
+    uk: Перевіряти гравців на проксі.
+  order: 5
+  env_variable: ONLINE_MODE
+  default_value: 'true'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: Forwarding Mode
+  name_translations:
+    uk: Режим forwarding
+  description: Velocity player information forwarding mode.
+  description_translations:
+    uk: Режим передачі даних гравців Velocity.
+  order: 6
+  env_variable: FORWARDING_MODE
+  default_value: modern
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - string
+  - in:none,legacy,bungeeguard,modern
+- name: Forwarding Secret
+  name_translations:
+    uk: Секрет forwarding
+  description: Secret shared with backend servers.
+  description_translations:
+    uk: Секрет, спільний із backend-серверами.
+  order: 7
+  env_variable: VELOCITY_SECRET
+  default_value: change-me-now
+  user_viewable: true
+  user_editable: true
+  secret: true
+  rules:
+  - required
+  - string
+  - min:8
+  - max:256
+- name: Automatic Core Updates
+  name_translations:
+    uk: Автоматичні оновлення ядра
+  description: Check for and install the newest compatible Velocity build before every server start, including fixed Velocity versions.
+  description_translations:
+    uk: Перед кожним запуском перевіряти й встановлювати найновішу сумісну збірку Velocity, зокрема для фіксованих версій.
+  order: 8
+  env_variable: AUTO_UPDATE
+  default_value: 'true'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean

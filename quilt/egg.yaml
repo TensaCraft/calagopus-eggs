@@ -1,0 +1,793 @@
+uuid: 268215dd-4ebe-52bf-b481-e6c66f9b103f
+name: Quilt
+description: A universal Quilt server installed with the official Quilt installer, strict metadata resolution, SHA-256 verification,
+  and official Pterodactyl Java images.
+author: GIGABAIT
+config:
+  files:
+    server.properties:
+      create_new: true
+      parser: properties
+      replace:
+      - match: server-port
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{server.build.default.port}}'
+      - match: query.port
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{server.build.default.port}}'
+      - match: motd
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.MOTD}}'
+      - match: max-players
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.MAX_PLAYERS}}'
+      - match: online-mode
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.ONLINE_MODE}}'
+      - match: difficulty
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.DIFFICULTY}}'
+      - match: gamemode
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.GAMEMODE}}'
+      - match: force-gamemode
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.FORCE_GAMEMODE}}'
+      - match: pvp
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.PVP}}'
+      - match: view-distance
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.VIEW_DISTANCE}}'
+      - match: simulation-distance
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.SIMULATION_DISTANCE}}'
+      - match: spawn-protection
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.SPAWN_PROTECTION}}'
+      - match: allow-nether
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.ALLOW_NETHER}}'
+      - match: enable-command-block
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.ENABLE_COMMAND_BLOCK}}'
+      - match: level-name
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.LEVEL_NAME}}'
+      - match: level-seed
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.LEVEL_SEED}}'
+      - match: level-type
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.LEVEL_TYPE}}'
+      - match: generate-structures
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.GENERATE_STRUCTURES}}'
+      - match: hardcore
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.HARDCORE}}'
+      - match: allow-flight
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.ALLOW_FLIGHT}}'
+      - match: white-list
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.WHITE_LIST}}'
+      - match: enforce-whitelist
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.ENFORCE_WHITELIST}}'
+      - match: player-idle-timeout
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.PLAYER_IDLE_TIMEOUT}}'
+      - match: max-tick-time
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.MAX_TICK_TIME}}'
+      - match: network-compression-threshold
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.NETWORK_COMPRESSION_THRESHOLD}}'
+      - match: enforce-secure-profile
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.ENFORCE_SECURE_PROFILE}}'
+      - match: enable-query
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.ENABLE_QUERY}}'
+      - match: enable-rcon
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.ENABLE_RCON}}'
+      - match: rcon.port
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.RCON_PORT}}'
+      - match: rcon.password
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.RCON_PASSWORD}}'
+      - match: resource-pack
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.RESOURCE_PACK_URL}}'
+      - match: resource-pack-sha1
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.RESOURCE_PACK_SHA1}}'
+      - match: require-resource-pack
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.RESOURCE_PACK_REQUIRED}}'
+  startup:
+    done:
+    - Done (
+    strip_ansi: false
+  stop:
+    type: command
+    value: stop
+scripts:
+  installation:
+    container: ghcr.io/pelican-eggs/yolks:java_21
+    entrypoint: bash
+    content: |
+      #!/bin/bash
+      set -euo pipefail
+
+      cd /mnt/server
+
+      if [[ "${MINECRAFT_VERSION}" == "latest" ]]; then
+        game_version="$(curl -fsSL https://meta.quiltmc.org/v3/versions/game | jq -er '[.[] | select(.stable == true)][0].version')"
+      else
+        game_version="${MINECRAFT_VERSION}"
+      fi
+      if [[ "${QUILT_LOADER_VERSION}" == "latest" ]]; then
+        loader_version="$(curl -fsSL https://meta.quiltmc.org/v3/versions/loader | jq -er '[.[] | select(.version | contains("-") | not)][0].version')"
+      else
+        loader_version="${QUILT_LOADER_VERSION}"
+      fi
+      if [[ "${QUILT_INSTALLER_VERSION}" == "latest" ]]; then
+        installer_json="$(curl -fsSL https://meta.quiltmc.org/v3/versions/installer | jq -ec '.[0]')"
+      else
+        installer_json="$(curl -fsSL https://meta.quiltmc.org/v3/versions/installer | jq -ec --arg version "${QUILT_INSTALLER_VERSION}" '[.[] | select(.version == $version)][0]')"
+      fi
+      installer_version="$(jq -er '.version' <<<"${installer_json}")"
+      installer_url="$(jq -er '.url' <<<"${installer_json}")"
+      expected_hash="$(curl -fsSL "${installer_url}.sha256")"
+      curl -fL --retry 3 --retry-delay 2 -o quilt-installer.jar.part "${installer_url}"
+      printf '%s  %s\n' "${expected_hash}" quilt-installer.jar.part | sha256sum -c -
+      mv -f quilt-installer.jar.part quilt-installer.jar
+      java -jar quilt-installer.jar install server "${game_version}" "${loader_version}" --install-dir=/mnt/server --download-server
+      rm -f quilt-installer.jar
+      [[ -s quilt-server-launch.jar ]] || { echo "Quilt launcher was not created." >&2; exit 1; }
+      mkdir -p mods
+      printf '%s\n' "${game_version} loader ${loader_version} installer ${installer_version}" > .egg-version
+      echo "Installed Quilt ${game_version} with loader ${loader_version}."
+startup_commands:
+  Default: bash -c printf\${IFS}%s\${IFS}H4sIAAAAAAAAA22Vx7KkiBFF9+8r0JN5C2IGKLwmRiG8KQpT2KKjQwGFp/Aetf5d1VJop1ydzMWNm6vzxz9AcdlCcTQVH2UGfPsGfP7pn4zrGP9wTZ5xhL/+Mo9L+q9P4Pffgc+f+Al8//4bMBdp+wEA/Vi2cwZ8/Xn6Ar5kbFKY/w2BeLEPxXrBg+OL3pFEqbWaVefyHleLnt9Dgb3G4RKFS2FJD0EUAtVeLb+cels1ydWAh0NL2h5p5FPEFmoGs6WtVpC6jTBGnXAUt65dEizFDbJS4pht6AKMK5RRkIywW+XZWMqdTtYr3vLeXbSOe7Yt61YZm0ZjCgzmuOs/p8afnWi8M+9uPETziqVokxdMepIV3EPFXK3uJmt8Nc8wxDXFMDxc9eUOa7yrDE5aI44ddMuixX2IPkUiOXgbuiMvCJcPJA7Gr9XWw+4gG/qNkUd0P5MC75t6S/JwS1GQd42YcKehNHlZv6qxdlTJo+0HlN5aXVm3k3UpLC1HXTGp00aVCOPcUOqx3S1otRV9szcj2dLZwo+8E72DB+znmGT5bJw0BRno7TGkF5uoyX529sFIzIE3m9dEURfISIjAsi8auS6C3hJt51zpe6HXBuwJYvAUAgKiVA+q+s1M6LNx0meqxTMfwvlDtw9CZ/dGQkxNT5B9jEe453ZYuhZm5sttkUWaySShkx6jX2s0BTM1y+XBxXt5dxuv+YNJSDrJn135mivZXhknYueSkNmLoXZshh37SHWsdrQO+noX9Yym8NpE8oSnG0JSPWynYsxN1AoKQmcbN5UVsfKkDZ7roxL4JbWH4wy83LDnkyu7WuvedT0hpQuLbl1VIhRQt7yQCFA+PMogMWzDtWyBccVxrs+TuR4qAYWuGyqgogUoUy6CXxSjlK9MYDx6HZejenqEIjIIlYbg2PV6o7ath0xH2x/ZmexQBq0Ojq/ZWeHUkq2X7binYuAHghGCfLtw2ytWg5y9BDuMsMi4q0vkSNndbW+NJ2mldm5OGOOJ6vZ9tS9Dh5Vn5e+rx3mW1O+pvbvuOKjIKb4GrcwpH5kdNgLfX7ZRXMr3jORMZ81n9tGgq0oOzOHpuzTvE3gWbFY3PHaB1CwkqZ3MvcqJOZCG8SPzilGTWSLtBtvsCQ9tdfuEjIUhT0pbbq948Yw4XqNy8aQN6V8K0SiLeq5UnkbEIip0sVzyBk6WF4aOCbsV1pJeH5BcCd2Wsvbdy4fqdpo5fwl91aop83w+CYfDdB9VU4h3HzezwmzJEpbRqFVFS4Sn7TfeFCW7DfseuvrW8rrj08kJS25HHAwy48wKN/1BIukouOopqSW3MkSI1pEl1vGu6UUR1cNMrRi80i7tOrPCVPnzthJTs5gRCitnBT1XMYyQKL11zcnp0ebnW9vfxmhZmCPU2vx6sK1PF1Lgjoi0ku1Ms4OIEPzZ7PYluxuIx2c4Vi5rnMvgvo/0Imdggsa1lsG5pd6zbJIP6KE4Tz27yDwhV6/d0cPUZjkNjB/VVSyhtLzwumE966YLdpagpfUhyk+3pnPXu9mQ95gD28A2oVd4XU8Z3pW6W+res6nS9iyZUn+N0Zq3Hs3Cjs+Gzqo9deeZOi2eXIcWO6cLpRg9si4kEe6amVp6uvrsvJAkjsLUyd2TtWDksBFvLShie3nWs8XlDPMF/ADeXkgJDPgleXN+lv1/6actgB8/gPRZdMDXN2aZO8Dtk2hOvwNckT5rIIvKV5r8BkxzNM5lm/8UBpDu5fSfpWzf99crmsuu/fUL+NtfLh/pa0rfQvl/iXw5RfE77devj6z8SPf0+XbU3z8//g2TC4dQuwYAAA==\|base64\${IFS}-d\|gzip\${IFS}-d\|bash\${IFS}-s\${IFS}--\${IFS}java\${IFS}-Xms128M\${IFS}-Xmx{{SERVER_MEMORY}}M\${IFS}-Dterminal.jline=false\${IFS}-Dterminal.ansi=true\${IFS}-jar\${IFS}quilt-server-launch.jar\${IFS}nogui
+force_outgoing_ip: false
+separate_port: false
+features:
+- eula
+- java_version
+docker_images:
+  Java 8: ghcr.io/pterodactyl/yolks:java_8
+  Java 11: ghcr.io/pterodactyl/yolks:java_11
+  Java 16: ghcr.io/pterodactyl/yolks:java_16
+  Java 17: ghcr.io/pterodactyl/yolks:java_17
+  Java 18: ghcr.io/pterodactyl/yolks:java_18
+  Java 19: ghcr.io/pterodactyl/yolks:java_19
+  Java 21: ghcr.io/pterodactyl/yolks:java_21
+  Java 22: ghcr.io/pterodactyl/yolks:java_22
+  Java 23: ghcr.io/pterodactyl/yolks:java_23
+  Java 24: ghcr.io/pterodactyl/yolks:java_24
+  Java 25: ghcr.io/pterodactyl/yolks:java_25
+file_denylist: []
+variables:
+- name: Minecraft Version
+  name_translations:
+    uk: Версія Minecraft
+  description: Exact Minecraft version or latest stable.
+  description_translations:
+    uk: Точна версія Minecraft або latest стабільна.
+  order: 0
+  env_variable: MINECRAFT_VERSION
+  default_value: latest
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - string
+  - max:32
+- name: Quilt Loader
+  name_translations:
+    uk: Quilt Loader
+  description: Exact stable loader version or latest.
+  description_translations:
+    uk: Точна стабільна версія loader або latest.
+  order: 1
+  env_variable: QUILT_LOADER_VERSION
+  default_value: latest
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - string
+  - max:32
+- name: Quilt Installer
+  name_translations:
+    uk: Quilt Installer
+  description: Exact installer version or latest.
+  description_translations:
+    uk: Точна версія installer або latest.
+  order: 2
+  env_variable: QUILT_INSTALLER_VERSION
+  default_value: latest
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - string
+  - max:32
+- name: MOTD
+  name_translations:
+    uk: Опис сервера
+  description: Message shown in the server list.
+  description_translations:
+    uk: Текст у списку серверів.
+  order: 3
+  env_variable: MOTD
+  default_value: A Minecraft Server
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - string
+  - max:255
+- name: Maximum Players
+  name_translations:
+    uk: Максимум гравців
+  description: Maximum simultaneous players.
+  description_translations:
+    uk: Максимальна кількість одночасних гравців.
+  order: 4
+  env_variable: MAX_PLAYERS
+  default_value: '20'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - integer
+  - min:1
+  - max:1000
+- name: Online Mode
+  name_translations:
+    uk: Онлайн-режим
+  description: Authenticate players with Mojang services.
+  description_translations:
+    uk: Перевіряти гравців через сервіси Mojang.
+  order: 5
+  env_variable: ONLINE_MODE
+  default_value: 'true'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: Difficulty
+  name_translations:
+    uk: Складність
+  description: World difficulty.
+  description_translations:
+    uk: Складність світу.
+  order: 6
+  env_variable: DIFFICULTY
+  default_value: normal
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - string
+  - in:peaceful,easy,normal,hard
+- name: Game Mode
+  name_translations:
+    uk: Режим гри
+  description: Default game mode.
+  description_translations:
+    uk: Стандартний режим гри.
+  order: 7
+  env_variable: GAMEMODE
+  default_value: survival
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - string
+  - in:survival,creative,adventure,spectator
+- name: Force Game Mode
+  name_translations:
+    uk: Примусовий режим гри
+  description: Force the default game mode when players join.
+  description_translations:
+    uk: Примусово застосовувати стандартний режим при вході.
+  order: 8
+  env_variable: FORCE_GAMEMODE
+  default_value: 'false'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: PVP
+  name_translations:
+    uk: PVP
+  description: Allow player-versus-player combat.
+  description_translations:
+    uk: Дозволити бої між гравцями.
+  order: 9
+  env_variable: PVP
+  default_value: 'true'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: View Distance
+  name_translations:
+    uk: Дальність огляду
+  description: Chunk view distance.
+  description_translations:
+    uk: Дальність огляду в чанках.
+  order: 10
+  env_variable: VIEW_DISTANCE
+  default_value: '10'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - integer
+  - min:2
+  - max:32
+- name: Simulation Distance
+  name_translations:
+    uk: Дальність симуляції
+  description: Chunk simulation distance.
+  description_translations:
+    uk: Дальність симуляції в чанках.
+  order: 11
+  env_variable: SIMULATION_DISTANCE
+  default_value: '10'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - integer
+  - min:2
+  - max:32
+- name: Spawn Protection
+  name_translations:
+    uk: Захист спавну
+  description: Spawn protection radius in blocks.
+  description_translations:
+    uk: Радіус захисту спавну в блоках.
+  order: 12
+  env_variable: SPAWN_PROTECTION
+  default_value: '16'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - integer
+  - min:0
+  - max:100
+- name: Allow Nether
+  name_translations:
+    uk: Дозволити Незер
+  description: Enable the Nether dimension.
+  description_translations:
+    uk: Увімкнути вимір Незеру.
+  order: 13
+  env_variable: ALLOW_NETHER
+  default_value: 'true'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: Command Blocks
+  name_translations:
+    uk: Командні блоки
+  description: Enable command blocks.
+  description_translations:
+    uk: Увімкнути командні блоки.
+  order: 14
+  env_variable: ENABLE_COMMAND_BLOCK
+  default_value: 'false'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: Level Name
+  name_translations:
+    uk: Назва світу
+  description: World directory name.
+  description_translations:
+    uk: Назва каталогу світу.
+  order: 15
+  env_variable: LEVEL_NAME
+  default_value: world
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - string
+  - regex:/^[A-Za-z0-9._-]+$/
+  - max:64
+- name: Level Seed
+  name_translations:
+    uk: Seed світу
+  description: Optional world generation seed.
+  description_translations:
+    uk: Необов'язковий seed генерації світу.
+  order: 16
+  env_variable: LEVEL_SEED
+  default_value: ''
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - nullable
+  - string
+  - max:128
+- name: Level Type
+  name_translations:
+    uk: Тип світу
+  description: World generator type or preset.
+  description_translations:
+    uk: Тип або preset генератора світу.
+  order: 17
+  env_variable: LEVEL_TYPE
+  default_value: minecraft:normal
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - string
+  - max:128
+- name: Generate Structures
+  name_translations:
+    uk: Генерувати структури
+  description: Generate villages and other structures.
+  description_translations:
+    uk: Генерувати села та інші структури.
+  order: 18
+  env_variable: GENERATE_STRUCTURES
+  default_value: 'true'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: Hardcore
+  name_translations:
+    uk: Хардкор
+  description: Enable hardcore mode.
+  description_translations:
+    uk: Увімкнути хардкорний режим.
+  order: 19
+  env_variable: HARDCORE
+  default_value: 'false'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: Allow Flight
+  name_translations:
+    uk: Дозволити політ
+  description: Allow flight without automatic kicks.
+  description_translations:
+    uk: Дозволити політ без автоматичного відключення.
+  order: 20
+  env_variable: ALLOW_FLIGHT
+  default_value: 'false'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: Whitelist
+  name_translations:
+    uk: Білий список
+  description: Enable the player whitelist.
+  description_translations:
+    uk: Увімкнути білий список гравців.
+  order: 21
+  env_variable: WHITE_LIST
+  default_value: 'false'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: Enforce Whitelist
+  name_translations:
+    uk: Примусовий білий список
+  description: Disconnect online players removed from the whitelist.
+  description_translations:
+    uk: Відключати онлайн-гравців, видалених із білого списку.
+  order: 22
+  env_variable: ENFORCE_WHITELIST
+  default_value: 'false'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: Idle Timeout
+  name_translations:
+    uk: Тайм-аут бездіяльності
+  description: Minutes before an idle player is disconnected; 0 disables it.
+  description_translations:
+    uk: Хвилини до відключення неактивного гравця; 0 вимикає.
+  order: 23
+  env_variable: PLAYER_IDLE_TIMEOUT
+  default_value: '0'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - integer
+  - min:0
+  - max:1440
+- name: Maximum Tick Time
+  name_translations:
+    uk: Максимальний час тіку
+  description: Watchdog threshold in milliseconds; -1 disables it.
+  description_translations:
+    uk: Поріг watchdog у мілісекундах; -1 вимикає.
+  order: 24
+  env_variable: MAX_TICK_TIME
+  default_value: '60000'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - integer
+  - min:-1
+- name: Compression Threshold
+  name_translations:
+    uk: Поріг стиснення
+  description: Network packet compression threshold; -1 disables compression.
+  description_translations:
+    uk: Поріг стиснення мережевих пакетів; -1 вимикає.
+  order: 25
+  env_variable: NETWORK_COMPRESSION_THRESHOLD
+  default_value: '256'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - integer
+  - min:-1
+- name: Secure Profiles
+  name_translations:
+    uk: Захищені профілі
+  description: Require Mojang-signed player public keys.
+  description_translations:
+    uk: Вимагати підписані Mojang публічні ключі гравців.
+  order: 26
+  env_variable: ENFORCE_SECURE_PROFILE
+  default_value: 'true'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: Query
+  name_translations:
+    uk: Query
+  description: Enable the GameSpy query listener on the primary port.
+  description_translations:
+    uk: Увімкнути GameSpy query на основному порту.
+  order: 27
+  env_variable: ENABLE_QUERY
+  default_value: 'false'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: RCON
+  name_translations:
+    uk: RCON
+  description: Enable remote console access.
+  description_translations:
+    uk: Увімкнути віддалений доступ до консолі.
+  order: 28
+  env_variable: ENABLE_RCON
+  default_value: 'false'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: RCON Port
+  name_translations:
+    uk: Порт RCON
+  description: Allocated RCON port.
+  description_translations:
+    uk: Виділений порт RCON.
+  order: 29
+  env_variable: RCON_PORT
+  default_value: '25575'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - integer
+  - min:1
+  - max:65535
+- name: RCON Password
+  name_translations:
+    uk: Пароль RCON
+  description: Password used when RCON is enabled.
+  description_translations:
+    uk: Пароль для увімкненого RCON.
+  order: 30
+  env_variable: RCON_PASSWORD
+  default_value: change-me-now
+  user_viewable: true
+  user_editable: true
+  secret: true
+  rules:
+  - required
+  - string
+  - min:8
+  - max:64
+- name: Resource Pack URL
+  name_translations:
+    uk: URL ресурспаку
+  description: Optional direct resource-pack download URL.
+  description_translations:
+    uk: Необов'язковий прямий URL ресурспаку.
+  order: 31
+  env_variable: RESOURCE_PACK_URL
+  default_value: ''
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - nullable
+  - url
+- name: Resource Pack SHA-1
+  name_translations:
+    uk: SHA-1 ресурспаку
+  description: Optional lowercase SHA-1 checksum for the resource pack.
+  description_translations:
+    uk: Необов'язкова SHA-1 сума ресурспаку малими літерами.
+  order: 32
+  env_variable: RESOURCE_PACK_SHA1
+  default_value: ''
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - nullable
+  - string
+  - regex:/^$|^[a-f0-9]{40}$/
+- name: Require Resource Pack
+  name_translations:
+    uk: Вимагати ресурспак
+  description: Require clients to accept the resource pack.
+  description_translations:
+    uk: Вимагати від клієнтів прийняти ресурспак.
+  order: 33
+  env_variable: RESOURCE_PACK_REQUIRED
+  default_value: 'false'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: Automatic Core Updates
+  name_translations:
+    uk: Автоматичні оновлення ядра
+  description: Check for and install the newest compatible Quilt loader and installer before every server start, including fixed Minecraft versions.
+  description_translations:
+    uk: Перед кожним запуском перевіряти й встановлювати найновіші сумісні Quilt loader та installer, зокрема для фіксованих версій Minecraft.
+  order: 34
+  env_variable: AUTO_UPDATE
+  default_value: 'true'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean

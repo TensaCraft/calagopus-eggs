@@ -1,0 +1,774 @@
+uuid: 4152ae0b-a7d6-5bb8-952f-1037e97bce7f
+name: NeoForge
+description: A modern NeoForge server with strict Maven metadata resolution, SHA-256 verification, native Calagopus configuration,
+  and official Pterodactyl Java images.
+author: GIGABAIT
+config:
+  files:
+    server.properties:
+      create_new: true
+      parser: properties
+      replace:
+      - match: server-port
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{server.build.default.port}}'
+      - match: query.port
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{server.build.default.port}}'
+      - match: motd
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.MOTD}}'
+      - match: max-players
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.MAX_PLAYERS}}'
+      - match: online-mode
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.ONLINE_MODE}}'
+      - match: difficulty
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.DIFFICULTY}}'
+      - match: gamemode
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.GAMEMODE}}'
+      - match: force-gamemode
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.FORCE_GAMEMODE}}'
+      - match: pvp
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.PVP}}'
+      - match: view-distance
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.VIEW_DISTANCE}}'
+      - match: simulation-distance
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.SIMULATION_DISTANCE}}'
+      - match: spawn-protection
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.SPAWN_PROTECTION}}'
+      - match: allow-nether
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.ALLOW_NETHER}}'
+      - match: enable-command-block
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.ENABLE_COMMAND_BLOCK}}'
+      - match: level-name
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.LEVEL_NAME}}'
+      - match: level-seed
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.LEVEL_SEED}}'
+      - match: level-type
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.LEVEL_TYPE}}'
+      - match: generate-structures
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.GENERATE_STRUCTURES}}'
+      - match: hardcore
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.HARDCORE}}'
+      - match: allow-flight
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.ALLOW_FLIGHT}}'
+      - match: white-list
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.WHITE_LIST}}'
+      - match: enforce-whitelist
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.ENFORCE_WHITELIST}}'
+      - match: player-idle-timeout
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.PLAYER_IDLE_TIMEOUT}}'
+      - match: max-tick-time
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.MAX_TICK_TIME}}'
+      - match: network-compression-threshold
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.NETWORK_COMPRESSION_THRESHOLD}}'
+      - match: enforce-secure-profile
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.ENFORCE_SECURE_PROFILE}}'
+      - match: enable-query
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.ENABLE_QUERY}}'
+      - match: enable-rcon
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.ENABLE_RCON}}'
+      - match: rcon.port
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.RCON_PORT}}'
+      - match: rcon.password
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.RCON_PASSWORD}}'
+      - match: resource-pack
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.RESOURCE_PACK_URL}}'
+      - match: resource-pack-sha1
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.RESOURCE_PACK_SHA1}}'
+      - match: require-resource-pack
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.RESOURCE_PACK_REQUIRED}}'
+  startup:
+    done:
+    - Done (
+    strip_ansi: false
+  stop:
+    type: command
+    value: stop
+scripts:
+  installation:
+    container: ghcr.io/pelican-eggs/yolks:java_21
+    entrypoint: bash
+    content: |
+      #!/bin/bash
+      set -euo pipefail
+
+      cd /mnt/server
+
+      metadata="$(curl -fsSL https://maven.neoforged.net/releases/net/neoforged/neoforge/maven-metadata.xml)"
+      versions="$(grep -oE '<version>[^<]+</version>' <<<"${metadata}" | sed -E 's:</?version>::g')"
+      if [[ "${NEOFORGE_VERSION}" == "latest" ]]; then
+        if [[ "${MINECRAFT_VERSION}" == "latest" ]]; then
+          version="$(grep -v -- '-' <<<"${versions}" | sort -V | tail -n1)"
+        else
+          case "${MINECRAFT_VERSION}" in
+            1.*) prefix="${MINECRAFT_VERSION#1.}." ;;
+            *.*.*) prefix="${MINECRAFT_VERSION}." ;;
+            *.*) prefix="${MINECRAFT_VERSION}.0." ;;
+            *) echo "Unsupported Minecraft version format: ${MINECRAFT_VERSION}" >&2; exit 1 ;;
+          esac
+          version="$(awk -v prefix="${prefix}" 'index($0, prefix) == 1' <<<"${versions}" | grep -v -- '-' | sort -V | tail -n1)"
+        fi
+      else
+        version="${NEOFORGE_VERSION}"
+      fi
+      [[ -n "${version}" ]] || { echo "No stable NeoForge version matched the request." >&2; exit 1; }
+      installer="neoforge-${version}-installer.jar"
+      base_url="https://maven.neoforged.net/releases/net/neoforged/neoforge/${version}/${installer}"
+      curl -fL --retry 3 --retry-delay 2 -o "${installer}.part" "${base_url}"
+      expected_hash="$(curl -fsSL "${base_url}.sha256")"
+      printf '%s  %s\n' "${expected_hash}" "${installer}.part" | sha256sum -c -
+      mv -f "${installer}.part" "${installer}"
+      java -jar "${installer}" --installServer
+      rm -f "${installer}" "${installer}.log"
+      args_file="$(find libraries/net/neoforged/neoforge -type f -name unix_args.txt -print | sort -V | tail -n1)"
+      [[ -n "${args_file}" ]] || { echo "NeoForge unix_args.txt was not created." >&2; exit 1; }
+      ln -sfn "${args_file}" unix_args.txt
+      mkdir -p mods
+      printf '%s\n' "${version}" > .egg-version
+      echo "Installed NeoForge ${version}."
+startup_commands:
+  Default: bash -c printf\${IFS}%s\${IFS}H4sIAAAAAAAAA22Uya6jZhBG9/cpyM1wFyjBzJAoURhtg81gfsDQakXMMxgzk867x50ou9Tq1Lf4VIvS+fYbJCxaJAyG/K1IoU+foPfv/uRsoP9hGyIHpJ9/HJ9T8tc79Ouv0PtXfIc+f/4FGvOkfYOgx7NoxxT6+H74gD5OxHDm/hvKcUIXCbVchJ81u9rs0u1VqOwjx0fYOq8+J3Cxdw20vjAVzy9P1oY5gm3KasIxKZLasV/1dm0C0m6ZEswAN+ZU7HI413u90BvSaQ/cRbx2sSAr+XYGqEEOEzi7W36QLr58VsOYumvEXb9F5wlnriHzNC8LT6WwnmyMfMSY/glKuxqzPmxhaS1BYNgiom3RUUmsLg5IrbDUiLKXcdhU0TCsZc5GAehwb4KFIooIQQmShc9SV7uJZ5tNnU0yNsxmVPXSjuy8dbMjZ/RcP1fkowOXQn5vgoC6N5qo3PKujrprEz1SzMHnAKPFo0+XCqmJONoX2qY469n3AgETSd4EwC03BHZjCoavh6AneKDGIKX5sdVXJuEsUQDcdn1oD1aeSt2vBg7p8Ziump0XlkxXXweQk2AAbIHvznpjUpzGkdHINyY9UUzPPJnSDTMLVpKjxk6XA8vTo0CaJ9uoMVUZY3spWPRY4Ztze0rH2JFKqzpbnVbJ6zW8ELa1lydOF5fYng6r7M9+RD5OBM7d4ZaH702T5n0yU0bi3FEpjn3rZCqHM9LE9dafs+oKHjzc865h2Fpmcig4lXF2nnmFSFvyIIbZDcViYj7mNA4nBoI/x+2kXYKWKExTzSRtS8SDjaA4JT3XPSfKqW+EErdsWL75fiNkSKjXNyk5YXWhtrfXR5QXegOCnITz3TGEu1VXXOl0B+bE6JWHa34ApH3emy04gWYzHrVVDhmJ7wImTfK25UO/Jz7I9Fqta4Hk+8M8xE08unNaeZfJMNm09DDuaBU2JqyqfziSw4jaz0Y9UAKnRcEEFI41E5NFnDWxkahblJt3Oxdpx2W3QzYYPg6f0SdOXes8GwMDGEiChNwCmBhbSkkmMZfSSpUu0Ea7xIZWX+y8UerRuohP1jmhcqsJS37gq60tu4uKRYRB6JcnacUzzu76Tc3q0Vh1V217Xy1zAt1LccwiN7uIfZdP6J3Guxy/+eVcoXY6kRyGr5w2CbMqba4il4yfs3jgmE+j8DEWYcyaYHCVucYCLLNTUuAY5y8GuMiuDqRWWiOBkegErzKKjw3kiK6LF3sciCnUP2zivT/XxxAuyLbeKrP2a3BsKp081pOmRcUahRmy+/lyzh/WqVnlBtmcRmaoex5uCQISUaHFCOCLyt0EK4uyYQVeyd7pre1IOlYOCjiOYpEJq1HyMegQpfV81VgYtxwCcXKxq+ONvsYGBaqEfd1lsqFuCyswF2DRPGDpZ0N7lMeivuae+HH29mQxrMcspD5g6nq3EetIGAinr0K5lifhpb4P6Av08mlCEdCP8YuzvXj8S18tC335AiVR3kEfn7hp7CD7EQdj8hkS8iSqoDQo6iT+BRrG4DkWbfZVtFCyFsM/S9G+8roOxqJrf/qAfvsBe0vqIXmJ+P8axWIIwlfbTx9vafGWrEn0cvvv729/AzSo2WzzBQAA\|base64\${IFS}-d\|gzip\${IFS}-d\|bash\${IFS}-s\${IFS}--\${IFS}java\${IFS}-Xms128M\${IFS}-Xmx{{SERVER_MEMORY}}M\${IFS}-Dterminal.jline=false\${IFS}-Dterminal.ansi=true\${IFS}@unix_args.txt\${IFS}nogui
+force_outgoing_ip: false
+separate_port: false
+features:
+- eula
+- java_version
+docker_images:
+  Java 17: ghcr.io/pterodactyl/yolks:java_17
+  Java 21: ghcr.io/pterodactyl/yolks:java_21
+  Java 25: ghcr.io/pterodactyl/yolks:java_25
+file_denylist: []
+variables:
+- name: Minecraft Version
+  name_translations:
+    uk: Версія Minecraft
+  description: Minecraft version used to select a stable NeoForge release, or latest.
+  description_translations:
+    uk: Версія Minecraft для вибору стабільного NeoForge release або latest.
+  order: 0
+  env_variable: MINECRAFT_VERSION
+  default_value: 1.21.1
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - string
+  - max:32
+- name: NeoForge Version
+  name_translations:
+    uk: Версія NeoForge
+  description: Exact NeoForge version or latest stable for Minecraft.
+  description_translations:
+    uk: Точна версія NeoForge або latest стабільна для Minecraft.
+  order: 1
+  env_variable: NEOFORGE_VERSION
+  default_value: latest
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - string
+  - max:64
+- name: MOTD
+  name_translations:
+    uk: Опис сервера
+  description: Message shown in the server list.
+  description_translations:
+    uk: Текст у списку серверів.
+  order: 2
+  env_variable: MOTD
+  default_value: A Minecraft Server
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - string
+  - max:255
+- name: Maximum Players
+  name_translations:
+    uk: Максимум гравців
+  description: Maximum simultaneous players.
+  description_translations:
+    uk: Максимальна кількість одночасних гравців.
+  order: 3
+  env_variable: MAX_PLAYERS
+  default_value: '20'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - integer
+  - min:1
+  - max:1000
+- name: Online Mode
+  name_translations:
+    uk: Онлайн-режим
+  description: Authenticate players with Mojang services.
+  description_translations:
+    uk: Перевіряти гравців через сервіси Mojang.
+  order: 4
+  env_variable: ONLINE_MODE
+  default_value: 'true'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: Difficulty
+  name_translations:
+    uk: Складність
+  description: World difficulty.
+  description_translations:
+    uk: Складність світу.
+  order: 5
+  env_variable: DIFFICULTY
+  default_value: normal
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - string
+  - in:peaceful,easy,normal,hard
+- name: Game Mode
+  name_translations:
+    uk: Режим гри
+  description: Default game mode.
+  description_translations:
+    uk: Стандартний режим гри.
+  order: 6
+  env_variable: GAMEMODE
+  default_value: survival
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - string
+  - in:survival,creative,adventure,spectator
+- name: Force Game Mode
+  name_translations:
+    uk: Примусовий режим гри
+  description: Force the default game mode when players join.
+  description_translations:
+    uk: Примусово застосовувати стандартний режим при вході.
+  order: 7
+  env_variable: FORCE_GAMEMODE
+  default_value: 'false'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: PVP
+  name_translations:
+    uk: PVP
+  description: Allow player-versus-player combat.
+  description_translations:
+    uk: Дозволити бої між гравцями.
+  order: 8
+  env_variable: PVP
+  default_value: 'true'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: View Distance
+  name_translations:
+    uk: Дальність огляду
+  description: Chunk view distance.
+  description_translations:
+    uk: Дальність огляду в чанках.
+  order: 9
+  env_variable: VIEW_DISTANCE
+  default_value: '10'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - integer
+  - min:2
+  - max:32
+- name: Simulation Distance
+  name_translations:
+    uk: Дальність симуляції
+  description: Chunk simulation distance.
+  description_translations:
+    uk: Дальність симуляції в чанках.
+  order: 10
+  env_variable: SIMULATION_DISTANCE
+  default_value: '10'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - integer
+  - min:2
+  - max:32
+- name: Spawn Protection
+  name_translations:
+    uk: Захист спавну
+  description: Spawn protection radius in blocks.
+  description_translations:
+    uk: Радіус захисту спавну в блоках.
+  order: 11
+  env_variable: SPAWN_PROTECTION
+  default_value: '16'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - integer
+  - min:0
+  - max:100
+- name: Allow Nether
+  name_translations:
+    uk: Дозволити Незер
+  description: Enable the Nether dimension.
+  description_translations:
+    uk: Увімкнути вимір Незеру.
+  order: 12
+  env_variable: ALLOW_NETHER
+  default_value: 'true'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: Command Blocks
+  name_translations:
+    uk: Командні блоки
+  description: Enable command blocks.
+  description_translations:
+    uk: Увімкнути командні блоки.
+  order: 13
+  env_variable: ENABLE_COMMAND_BLOCK
+  default_value: 'false'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: Level Name
+  name_translations:
+    uk: Назва світу
+  description: World directory name.
+  description_translations:
+    uk: Назва каталогу світу.
+  order: 14
+  env_variable: LEVEL_NAME
+  default_value: world
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - string
+  - regex:/^[A-Za-z0-9._-]+$/
+  - max:64
+- name: Level Seed
+  name_translations:
+    uk: Seed світу
+  description: Optional world generation seed.
+  description_translations:
+    uk: Необов'язковий seed генерації світу.
+  order: 15
+  env_variable: LEVEL_SEED
+  default_value: ''
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - nullable
+  - string
+  - max:128
+- name: Level Type
+  name_translations:
+    uk: Тип світу
+  description: World generator type or preset.
+  description_translations:
+    uk: Тип або preset генератора світу.
+  order: 16
+  env_variable: LEVEL_TYPE
+  default_value: minecraft:normal
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - string
+  - max:128
+- name: Generate Structures
+  name_translations:
+    uk: Генерувати структури
+  description: Generate villages and other structures.
+  description_translations:
+    uk: Генерувати села та інші структури.
+  order: 17
+  env_variable: GENERATE_STRUCTURES
+  default_value: 'true'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: Hardcore
+  name_translations:
+    uk: Хардкор
+  description: Enable hardcore mode.
+  description_translations:
+    uk: Увімкнути хардкорний режим.
+  order: 18
+  env_variable: HARDCORE
+  default_value: 'false'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: Allow Flight
+  name_translations:
+    uk: Дозволити політ
+  description: Allow flight without automatic kicks.
+  description_translations:
+    uk: Дозволити політ без автоматичного відключення.
+  order: 19
+  env_variable: ALLOW_FLIGHT
+  default_value: 'false'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: Whitelist
+  name_translations:
+    uk: Білий список
+  description: Enable the player whitelist.
+  description_translations:
+    uk: Увімкнути білий список гравців.
+  order: 20
+  env_variable: WHITE_LIST
+  default_value: 'false'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: Enforce Whitelist
+  name_translations:
+    uk: Примусовий білий список
+  description: Disconnect online players removed from the whitelist.
+  description_translations:
+    uk: Відключати онлайн-гравців, видалених із білого списку.
+  order: 21
+  env_variable: ENFORCE_WHITELIST
+  default_value: 'false'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: Idle Timeout
+  name_translations:
+    uk: Тайм-аут бездіяльності
+  description: Minutes before an idle player is disconnected; 0 disables it.
+  description_translations:
+    uk: Хвилини до відключення неактивного гравця; 0 вимикає.
+  order: 22
+  env_variable: PLAYER_IDLE_TIMEOUT
+  default_value: '0'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - integer
+  - min:0
+  - max:1440
+- name: Maximum Tick Time
+  name_translations:
+    uk: Максимальний час тіку
+  description: Watchdog threshold in milliseconds; -1 disables it.
+  description_translations:
+    uk: Поріг watchdog у мілісекундах; -1 вимикає.
+  order: 23
+  env_variable: MAX_TICK_TIME
+  default_value: '60000'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - integer
+  - min:-1
+- name: Compression Threshold
+  name_translations:
+    uk: Поріг стиснення
+  description: Network packet compression threshold; -1 disables compression.
+  description_translations:
+    uk: Поріг стиснення мережевих пакетів; -1 вимикає.
+  order: 24
+  env_variable: NETWORK_COMPRESSION_THRESHOLD
+  default_value: '256'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - integer
+  - min:-1
+- name: Secure Profiles
+  name_translations:
+    uk: Захищені профілі
+  description: Require Mojang-signed player public keys.
+  description_translations:
+    uk: Вимагати підписані Mojang публічні ключі гравців.
+  order: 25
+  env_variable: ENFORCE_SECURE_PROFILE
+  default_value: 'true'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: Query
+  name_translations:
+    uk: Query
+  description: Enable the GameSpy query listener on the primary port.
+  description_translations:
+    uk: Увімкнути GameSpy query на основному порту.
+  order: 26
+  env_variable: ENABLE_QUERY
+  default_value: 'false'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: RCON
+  name_translations:
+    uk: RCON
+  description: Enable remote console access.
+  description_translations:
+    uk: Увімкнути віддалений доступ до консолі.
+  order: 27
+  env_variable: ENABLE_RCON
+  default_value: 'false'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: RCON Port
+  name_translations:
+    uk: Порт RCON
+  description: Allocated RCON port.
+  description_translations:
+    uk: Виділений порт RCON.
+  order: 28
+  env_variable: RCON_PORT
+  default_value: '25575'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - integer
+  - min:1
+  - max:65535
+- name: RCON Password
+  name_translations:
+    uk: Пароль RCON
+  description: Password used when RCON is enabled.
+  description_translations:
+    uk: Пароль для увімкненого RCON.
+  order: 29
+  env_variable: RCON_PASSWORD
+  default_value: change-me-now
+  user_viewable: true
+  user_editable: true
+  secret: true
+  rules:
+  - required
+  - string
+  - min:8
+  - max:64
+- name: Resource Pack URL
+  name_translations:
+    uk: URL ресурспаку
+  description: Optional direct resource-pack download URL.
+  description_translations:
+    uk: Необов'язковий прямий URL ресурспаку.
+  order: 30
+  env_variable: RESOURCE_PACK_URL
+  default_value: ''
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - nullable
+  - url
+- name: Resource Pack SHA-1
+  name_translations:
+    uk: SHA-1 ресурспаку
+  description: Optional lowercase SHA-1 checksum for the resource pack.
+  description_translations:
+    uk: Необов'язкова SHA-1 сума ресурспаку малими літерами.
+  order: 31
+  env_variable: RESOURCE_PACK_SHA1
+  default_value: ''
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - nullable
+  - string
+  - regex:/^$|^[a-f0-9]{40}$/
+- name: Require Resource Pack
+  name_translations:
+    uk: Вимагати ресурспак
+  description: Require clients to accept the resource pack.
+  description_translations:
+    uk: Вимагати від клієнтів прийняти ресурспак.
+  order: 32
+  env_variable: RESOURCE_PACK_REQUIRED
+  default_value: 'false'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: Automatic Core Updates
+  name_translations:
+    uk: Автоматичні оновлення ядра
+  description: Check for and install the newest compatible NeoForge build before every server start, including fixed Minecraft versions.
+  description_translations:
+    uk: Перед кожним запуском перевіряти й встановлювати найновішу сумісну збірку NeoForge, зокрема для фіксованих версій Minecraft.
+  order: 33
+  env_variable: AUTO_UPDATE
+  default_value: 'true'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean

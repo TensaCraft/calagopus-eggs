@@ -1,0 +1,882 @@
+uuid: 95bd7f2d-d536-4bd1-b346-0c58c14795a5
+name: Minecraft Java
+description: A clean Paper, Folia, or Purpur server with strict provider resolution, verified downloads, native Calagopus
+  configuration, and official Pterodactyl Java images.
+author: GIGABAIT
+config:
+  files:
+    server.properties:
+      create_new: true
+      parser: properties
+      replace:
+      - match: server-port
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{server.build.default.port}}'
+      - match: query.port
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{server.build.default.port}}'
+      - match: motd
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.MOTD}}'
+      - match: max-players
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.MAX_PLAYERS}}'
+      - match: online-mode
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.ONLINE_MODE}}'
+      - match: difficulty
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.DIFFICULTY}}'
+      - match: gamemode
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.GAMEMODE}}'
+      - match: force-gamemode
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.FORCE_GAMEMODE}}'
+      - match: pvp
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.PVP}}'
+      - match: view-distance
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.VIEW_DISTANCE}}'
+      - match: simulation-distance
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.SIMULATION_DISTANCE}}'
+      - match: spawn-protection
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.SPAWN_PROTECTION}}'
+      - match: allow-nether
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.ALLOW_NETHER}}'
+      - match: enable-command-block
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.ENABLE_COMMAND_BLOCK}}'
+      - match: level-name
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.LEVEL_NAME}}'
+      - match: level-seed
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.LEVEL_SEED}}'
+      - match: level-type
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.LEVEL_TYPE}}'
+      - match: generate-structures
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.GENERATE_STRUCTURES}}'
+      - match: hardcore
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.HARDCORE}}'
+      - match: allow-flight
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.ALLOW_FLIGHT}}'
+      - match: white-list
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.WHITE_LIST}}'
+      - match: enforce-whitelist
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.ENFORCE_WHITELIST}}'
+      - match: player-idle-timeout
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.PLAYER_IDLE_TIMEOUT}}'
+      - match: max-tick-time
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.MAX_TICK_TIME}}'
+      - match: network-compression-threshold
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.NETWORK_COMPRESSION_THRESHOLD}}'
+      - match: enforce-secure-profile
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.ENFORCE_SECURE_PROFILE}}'
+      - match: enable-query
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.ENABLE_QUERY}}'
+      - match: enable-rcon
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.ENABLE_RCON}}'
+      - match: rcon.port
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.RCON_PORT}}'
+      - match: rcon.password
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.RCON_PASSWORD}}'
+      - match: resource-pack
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.RESOURCE_PACK_URL}}'
+      - match: resource-pack-sha1
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.RESOURCE_PACK_SHA1}}'
+      - match: require-resource-pack
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.RESOURCE_PACK_REQUIRED}}'
+    config/paper-global.yml:
+      create_new: false
+      parser: yaml
+      replace:
+      - match: proxies.velocity.enabled
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.VELOCITY_ENABLED}}'
+      - match: proxies.velocity.secret
+        insert_new: true
+        update_existing: true
+        if_value: null
+        replace_with: '{{env.VELOCITY_SECRET}}'
+  startup:
+    done:
+    - ')! For help, type '
+    strip_ansi: false
+  stop:
+    type: command
+    value: stop
+scripts:
+  installation:
+    container: ghcr.io/pterodactyl/installers:debian
+    entrypoint: bash
+    content: |
+      #!/bin/bash
+      set -euo pipefail
+
+      export DEBIAN_FRONTEND=noninteractive
+      apt-get update
+      apt-get install -y --no-install-recommends jq ca-certificates
+      rm -rf /var/lib/apt/lists/*
+      cd /mnt/server
+      project="$(printf '%s' "${CORE_TYPE}" | tr '[:upper:]' '[:lower:]')"
+      case "${project}" in
+        paper|folia)
+          project_json="$(curl -fsSL "https://fill.papermc.io/v3/projects/${project}")"
+          if [[ "${MINECRAFT_VERSION}" == "latest" ]]; then
+            version="$(jq -r '[.versions[] | .[] | select(test("SNAPSHOT|pre|rc"; "i") | not)][0]' <<<"${project_json}")"
+          else
+            version="${MINECRAFT_VERSION}"
+          fi
+          [[ -n "${version}" && "${version}" != "null" ]] || { echo "No stable ${project} version found." >&2; exit 1; }
+
+          if [[ "${BUILD_NUMBER}" == "latest" ]]; then
+            build_url="https://fill.papermc.io/v3/projects/${project}/versions/${version}/builds/latest"
+          else
+            build_url="https://fill.papermc.io/v3/projects/${project}/versions/${version}/builds/${BUILD_NUMBER}"
+          fi
+          build_json="$(curl -fsSL "${build_url}")"
+          build="$(jq -er '.id' <<<"${build_json}")"
+          download_url="$(jq -er '.downloads["server:default"].url' <<<"${build_json}")"
+          expected_hash="$(jq -er '.downloads["server:default"].checksums.sha256' <<<"${build_json}")"
+          curl -fL --retry 3 --retry-delay 2 -o "${SERVER_JARFILE}.part" "${download_url}"
+          printf '%s  %s\n' "${expected_hash}" "${SERVER_JARFILE}.part" | sha256sum -c -
+          ;;
+        purpur)
+          if [[ "${MINECRAFT_VERSION}" == "latest" ]]; then
+            version="$(curl -fsSL https://api.purpurmc.org/v2/purpur | jq -er '.metadata.current')"
+          else
+            version="${MINECRAFT_VERSION}"
+          fi
+          if [[ "${BUILD_NUMBER}" == "latest" ]]; then
+            build_json="$(curl -fsSL "https://api.purpurmc.org/v2/purpur/${version}/latest")"
+            build="$(jq -er '.build' <<<"${build_json}")"
+            expected_hash="$(jq -er '.md5' <<<"${build_json}")"
+          else
+            build="${BUILD_NUMBER}"
+            build_json="$(curl -fsSL "https://api.purpurmc.org/v2/purpur/${version}/${build}")"
+            expected_hash="$(jq -er '.md5' <<<"${build_json}")"
+          fi
+          curl -fL --retry 3 --retry-delay 2 -o "${SERVER_JARFILE}.part" "https://api.purpurmc.org/v2/purpur/${version}/${build}/download"
+          printf '%s  %s\n' "${expected_hash}" "${SERVER_JARFILE}.part" | md5sum -c -
+          ;;
+        *)
+          echo "CORE_TYPE must be paper, folia, or purpur." >&2
+          exit 1
+          ;;
+      esac
+
+      mv -f "${SERVER_JARFILE}.part" "${SERVER_JARFILE}"
+      printf '%s\n' "${project} ${version} build ${build}" > .egg-version
+      echo "Installed ${project} ${version} build ${build}."
+startup_commands:
+  Default: bash -c printf\${IFS}%s\${IFS}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\|base64\${IFS}-d\|gzip\${IFS}-d\|bash\${IFS}-s\${IFS}--\${IFS}java\${IFS}-Xms128M\${IFS}-Xmx{{SERVER_MEMORY}}M\${IFS}-Dterminal.jline=false\${IFS}-Dterminal.ansi=true\${IFS}-jar\${IFS}{{SERVER_JARFILE}}\${IFS}nogui
+  Aikar G1GC: bash -c printf\${IFS}%s\${IFS}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\|base64\${IFS}-d\|gzip\${IFS}-d\|bash\${IFS}-s\${IFS}--\${IFS}java\${IFS}-Xms128M\${IFS}-Xmx{{SERVER_MEMORY}}M\${IFS}-XX:+UseG1GC\${IFS}-XX:+ParallelRefProcEnabled\${IFS}-XX:MaxGCPauseMillis=200\${IFS}-XX:+UnlockExperimentalVMOptions\${IFS}-XX:+DisableExplicitGC\${IFS}-XX:+AlwaysPreTouch\${IFS}-XX:G1NewSizePercent=30\${IFS}-XX:G1MaxNewSizePercent=40\${IFS}-XX:G1HeapRegionSize=8M\${IFS}-XX:G1ReservePercent=20\${IFS}-XX:G1HeapWastePercent=5\${IFS}-XX:G1MixedGCCountTarget=4\${IFS}-XX:InitiatingHeapOccupancyPercent=15\${IFS}-XX:G1MixedGCLiveThresholdPercent=90\${IFS}-XX:G1RSetUpdatingPauseTimePercent=5\${IFS}-XX:SurvivorRatio=32\${IFS}-XX:+PerfDisableSharedMem\${IFS}-XX:MaxTenuringThreshold=1\${IFS}-Dusing.aikars.flags=https://mcflags.emc.gs\${IFS}-Daikars.new.flags=true\${IFS}-Dterminal.jline=false\${IFS}-Dterminal.ansi=true\${IFS}-jar\${IFS}{{SERVER_JARFILE}}\${IFS}nogui
+force_outgoing_ip: false
+separate_port: false
+features:
+- eula
+- java_version
+docker_images:
+  Java 8: ghcr.io/pterodactyl/yolks:java_8
+  Java 11: ghcr.io/pterodactyl/yolks:java_11
+  Java 16: ghcr.io/pterodactyl/yolks:java_16
+  Java 17: ghcr.io/pterodactyl/yolks:java_17
+  Java 18: ghcr.io/pterodactyl/yolks:java_18
+  Java 19: ghcr.io/pterodactyl/yolks:java_19
+  Java 21: ghcr.io/pterodactyl/yolks:java_21
+  Java 22: ghcr.io/pterodactyl/yolks:java_22
+  Java 23: ghcr.io/pterodactyl/yolks:java_23
+  Java 24: ghcr.io/pterodactyl/yolks:java_24
+  Java 25: ghcr.io/pterodactyl/yolks:java_25
+file_denylist: []
+variables:
+- name: Server Core
+  name_translations:
+    uk: Ядро сервера
+  description: Server implementation to install.
+  description_translations:
+    uk: Реалізація сервера для встановлення.
+  order: 0
+  env_variable: CORE_TYPE
+  default_value: paper
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - string
+  - in:paper,folia,purpur
+- name: Minecraft Version
+  name_translations:
+    uk: Версія Minecraft
+  description: Exact Minecraft version or latest stable.
+  description_translations:
+    uk: Точна версія Minecraft або latest для стабільної.
+  order: 1
+  env_variable: MINECRAFT_VERSION
+  default_value: latest
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - string
+  - max:32
+- name: Build
+  name_translations:
+    uk: Збірка
+  description: Exact provider build or latest.
+  description_translations:
+    uk: Точний номер збірки або latest.
+  order: 2
+  env_variable: BUILD_NUMBER
+  default_value: latest
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - string
+  - max:32
+- name: Server Jar
+  name_translations:
+    uk: Файл сервера
+  description: Installed server jar filename.
+  description_translations:
+    uk: Назва встановленого jar-файлу сервера.
+  order: 3
+  env_variable: SERVER_JARFILE
+  default_value: server.jar
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - string
+  - regex:/^[A-Za-z0-9._-]+\.jar$/
+- name: MOTD
+  name_translations:
+    uk: Опис сервера
+  description: Message shown in the server list.
+  description_translations:
+    uk: Текст у списку серверів.
+  order: 4
+  env_variable: MOTD
+  default_value: A Minecraft Server
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - string
+  - max:255
+- name: Maximum Players
+  name_translations:
+    uk: Максимум гравців
+  description: Maximum simultaneous players.
+  description_translations:
+    uk: Максимальна кількість одночасних гравців.
+  order: 5
+  env_variable: MAX_PLAYERS
+  default_value: '20'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - integer
+  - min:1
+  - max:1000
+- name: Online Mode
+  name_translations:
+    uk: Онлайн-режим
+  description: Authenticate players with Mojang services.
+  description_translations:
+    uk: Перевіряти гравців через сервіси Mojang.
+  order: 6
+  env_variable: ONLINE_MODE
+  default_value: 'true'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: Difficulty
+  name_translations:
+    uk: Складність
+  description: World difficulty.
+  description_translations:
+    uk: Складність світу.
+  order: 7
+  env_variable: DIFFICULTY
+  default_value: normal
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - string
+  - in:peaceful,easy,normal,hard
+- name: Game Mode
+  name_translations:
+    uk: Режим гри
+  description: Default game mode.
+  description_translations:
+    uk: Стандартний режим гри.
+  order: 8
+  env_variable: GAMEMODE
+  default_value: survival
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - string
+  - in:survival,creative,adventure,spectator
+- name: Force Game Mode
+  name_translations:
+    uk: Примусовий режим гри
+  description: Force the default game mode when players join.
+  description_translations:
+    uk: Примусово застосовувати стандартний режим при вході.
+  order: 9
+  env_variable: FORCE_GAMEMODE
+  default_value: 'false'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: PVP
+  name_translations:
+    uk: PVP
+  description: Allow player-versus-player combat.
+  description_translations:
+    uk: Дозволити бої між гравцями.
+  order: 10
+  env_variable: PVP
+  default_value: 'true'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: View Distance
+  name_translations:
+    uk: Дальність огляду
+  description: Chunk view distance.
+  description_translations:
+    uk: Дальність огляду в чанках.
+  order: 11
+  env_variable: VIEW_DISTANCE
+  default_value: '10'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - integer
+  - min:2
+  - max:32
+- name: Simulation Distance
+  name_translations:
+    uk: Дальність симуляції
+  description: Chunk simulation distance.
+  description_translations:
+    uk: Дальність симуляції в чанках.
+  order: 12
+  env_variable: SIMULATION_DISTANCE
+  default_value: '10'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - integer
+  - min:2
+  - max:32
+- name: Spawn Protection
+  name_translations:
+    uk: Захист спавну
+  description: Spawn protection radius in blocks.
+  description_translations:
+    uk: Радіус захисту спавну в блоках.
+  order: 13
+  env_variable: SPAWN_PROTECTION
+  default_value: '16'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - integer
+  - min:0
+  - max:100
+- name: Allow Nether
+  name_translations:
+    uk: Дозволити Незер
+  description: Enable the Nether dimension.
+  description_translations:
+    uk: Увімкнути вимір Незеру.
+  order: 14
+  env_variable: ALLOW_NETHER
+  default_value: 'true'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: Command Blocks
+  name_translations:
+    uk: Командні блоки
+  description: Enable command blocks.
+  description_translations:
+    uk: Увімкнути командні блоки.
+  order: 15
+  env_variable: ENABLE_COMMAND_BLOCK
+  default_value: 'false'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: Level Name
+  name_translations:
+    uk: Назва світу
+  description: World directory name.
+  description_translations:
+    uk: Назва каталогу світу.
+  order: 16
+  env_variable: LEVEL_NAME
+  default_value: world
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - string
+  - regex:/^[A-Za-z0-9._-]+$/
+  - max:64
+- name: Level Seed
+  name_translations:
+    uk: Seed світу
+  description: Optional world generation seed.
+  description_translations:
+    uk: Необов'язковий seed генерації світу.
+  order: 17
+  env_variable: LEVEL_SEED
+  default_value: ''
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - nullable
+  - string
+  - max:128
+- name: Level Type
+  name_translations:
+    uk: Тип світу
+  description: World generator type or preset.
+  description_translations:
+    uk: Тип або preset генератора світу.
+  order: 18
+  env_variable: LEVEL_TYPE
+  default_value: minecraft:normal
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - string
+  - max:128
+- name: Generate Structures
+  name_translations:
+    uk: Генерувати структури
+  description: Generate villages and other structures.
+  description_translations:
+    uk: Генерувати села та інші структури.
+  order: 19
+  env_variable: GENERATE_STRUCTURES
+  default_value: 'true'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: Hardcore
+  name_translations:
+    uk: Хардкор
+  description: Enable hardcore mode.
+  description_translations:
+    uk: Увімкнути хардкорний режим.
+  order: 20
+  env_variable: HARDCORE
+  default_value: 'false'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: Allow Flight
+  name_translations:
+    uk: Дозволити політ
+  description: Allow flight without automatic kicks.
+  description_translations:
+    uk: Дозволити політ без автоматичного відключення.
+  order: 21
+  env_variable: ALLOW_FLIGHT
+  default_value: 'false'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: Whitelist
+  name_translations:
+    uk: Білий список
+  description: Enable the player whitelist.
+  description_translations:
+    uk: Увімкнути білий список гравців.
+  order: 22
+  env_variable: WHITE_LIST
+  default_value: 'false'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: Enforce Whitelist
+  name_translations:
+    uk: Примусовий білий список
+  description: Disconnect online players removed from the whitelist.
+  description_translations:
+    uk: Відключати онлайн-гравців, видалених із білого списку.
+  order: 23
+  env_variable: ENFORCE_WHITELIST
+  default_value: 'false'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: Idle Timeout
+  name_translations:
+    uk: Тайм-аут бездіяльності
+  description: Minutes before an idle player is disconnected; 0 disables it.
+  description_translations:
+    uk: Хвилини до відключення неактивного гравця; 0 вимикає.
+  order: 24
+  env_variable: PLAYER_IDLE_TIMEOUT
+  default_value: '0'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - integer
+  - min:0
+  - max:1440
+- name: Maximum Tick Time
+  name_translations:
+    uk: Максимальний час тіку
+  description: Watchdog threshold in milliseconds; -1 disables it.
+  description_translations:
+    uk: Поріг watchdog у мілісекундах; -1 вимикає.
+  order: 25
+  env_variable: MAX_TICK_TIME
+  default_value: '60000'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - integer
+  - min:-1
+- name: Compression Threshold
+  name_translations:
+    uk: Поріг стиснення
+  description: Network packet compression threshold; -1 disables compression.
+  description_translations:
+    uk: Поріг стиснення мережевих пакетів; -1 вимикає.
+  order: 26
+  env_variable: NETWORK_COMPRESSION_THRESHOLD
+  default_value: '256'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - integer
+  - min:-1
+- name: Secure Profiles
+  name_translations:
+    uk: Захищені профілі
+  description: Require Mojang-signed player public keys.
+  description_translations:
+    uk: Вимагати підписані Mojang публічні ключі гравців.
+  order: 27
+  env_variable: ENFORCE_SECURE_PROFILE
+  default_value: 'true'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: Query
+  name_translations:
+    uk: Query
+  description: Enable the GameSpy query listener on the primary port.
+  description_translations:
+    uk: Увімкнути GameSpy query на основному порту.
+  order: 28
+  env_variable: ENABLE_QUERY
+  default_value: 'false'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: RCON
+  name_translations:
+    uk: RCON
+  description: Enable remote console access.
+  description_translations:
+    uk: Увімкнути віддалений доступ до консолі.
+  order: 29
+  env_variable: ENABLE_RCON
+  default_value: 'false'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: RCON Port
+  name_translations:
+    uk: Порт RCON
+  description: Allocated RCON port.
+  description_translations:
+    uk: Виділений порт RCON.
+  order: 30
+  env_variable: RCON_PORT
+  default_value: '25575'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - integer
+  - min:1
+  - max:65535
+- name: RCON Password
+  name_translations:
+    uk: Пароль RCON
+  description: Password used when RCON is enabled.
+  description_translations:
+    uk: Пароль для увімкненого RCON.
+  order: 31
+  env_variable: RCON_PASSWORD
+  default_value: change-me-now
+  user_viewable: true
+  user_editable: true
+  secret: true
+  rules:
+  - required
+  - string
+  - min:8
+  - max:64
+- name: Resource Pack URL
+  name_translations:
+    uk: URL ресурспаку
+  description: Optional direct resource-pack download URL.
+  description_translations:
+    uk: Необов'язковий прямий URL ресурспаку.
+  order: 32
+  env_variable: RESOURCE_PACK_URL
+  default_value: ''
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - nullable
+  - url
+- name: Resource Pack SHA-1
+  name_translations:
+    uk: SHA-1 ресурспаку
+  description: Optional lowercase SHA-1 checksum for the resource pack.
+  description_translations:
+    uk: Необов'язкова SHA-1 сума ресурспаку малими літерами.
+  order: 33
+  env_variable: RESOURCE_PACK_SHA1
+  default_value: ''
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - nullable
+  - string
+  - regex:/^$|^[a-f0-9]{40}$/
+- name: Require Resource Pack
+  name_translations:
+    uk: Вимагати ресурспак
+  description: Require clients to accept the resource pack.
+  description_translations:
+    uk: Вимагати від клієнтів прийняти ресурспак.
+  order: 34
+  env_variable: RESOURCE_PACK_REQUIRED
+  default_value: 'false'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: Velocity Support
+  name_translations:
+    uk: Підтримка Velocity
+  description: Enable modern Velocity forwarding in Paper-compatible cores.
+  description_translations:
+    uk: Увімкнути сучасний forwarding Velocity у сумісних ядрах.
+  order: 35
+  env_variable: VELOCITY_ENABLED
+  default_value: 'false'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
+- name: Velocity Secret
+  name_translations:
+    uk: Секрет Velocity
+  description: Forwarding secret shared with Velocity.
+  description_translations:
+    uk: Спільний секрет forwarding із Velocity.
+  order: 36
+  env_variable: VELOCITY_SECRET
+  default_value: change-me
+  user_viewable: true
+  user_editable: true
+  secret: true
+  rules:
+  - required
+  - string
+  - min:8
+  - max:256
+- name: Automatic Core Updates
+  name_translations:
+    uk: Автоматичні оновлення ядра
+  description: Check for and install the newest compatible core build before every server start, including fixed Minecraft versions.
+  description_translations:
+    uk: Перед кожним запуском перевіряти й встановлювати найновішу сумісну збірку ядра, зокрема для фіксованих версій Minecraft.
+  order: 37
+  env_variable: AUTO_UPDATE
+  default_value: 'true'
+  user_viewable: true
+  user_editable: true
+  secret: false
+  rules:
+  - required
+  - boolean
