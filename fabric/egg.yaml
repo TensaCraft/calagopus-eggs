@@ -756,7 +756,7 @@ variables:
   - required
   - string
   - min:8
-  - max:64
+  - max:256
 - name: Resource Pack URL
   name_translations:
     uk: URL ресурспаку
