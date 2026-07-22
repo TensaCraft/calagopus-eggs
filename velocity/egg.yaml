@@ -7,38 +7,38 @@ config:
   files:
     velocity.toml:
       create_new: true
-      parser: file
+      parser: toml
       replace:
-      - match: 'bind = '
+      - match: bind
         insert_new: false
         update_existing: true
         if_value: null
-        replace_with: bind = "0.0.0.0:{{server.build.default.port}}"
-      - match: 'motd = '
+        replace_with: 0.0.0.0:{{server.build.default.port}}
+      - match: motd
         insert_new: false
         update_existing: true
         if_value: null
-        replace_with: motd = "{{env.MOTD}}"
-      - match: 'show-max-players = '
+        replace_with: '{{env.MOTD}}'
+      - match: show-max-players
         insert_new: false
         update_existing: true
         if_value: null
-        replace_with: show-max-players = {{env.MAX_PLAYERS}}
-      - match: 'online-mode = '
+        replace_with: '{{env.MAX_PLAYERS}}'
+      - match: online-mode
         insert_new: false
         update_existing: true
         if_value: null
-        replace_with: online-mode = {{env.ONLINE_MODE}}
-      - match: 'player-info-forwarding-mode = '
+        replace_with: '{{env.ONLINE_MODE}}'
+      - match: player-info-forwarding-mode
         insert_new: false
         update_existing: true
         if_value: null
-        replace_with: player-info-forwarding-mode = "{{env.FORWARDING_MODE}}"
-      - match: 'forwarding-secret-file = '
+        replace_with: '{{env.FORWARDING_MODE}}'
+      - match: forwarding-secret-file
         insert_new: false
         update_existing: true
         if_value: null
-        replace_with: forwarding-secret-file = "forwarding.secret"
+        replace_with: forwarding.secret
   startup:
     done:
     - Done (
@@ -197,6 +197,7 @@ variables:
   rules:
   - required
   - boolean
+  - in:true,false
 - name: Forwarding Mode
   name_translations:
     uk: Режим forwarding
@@ -245,3 +246,4 @@ variables:
   rules:
   - required
   - boolean
+  - in:true,false

@@ -312,6 +312,7 @@ variables:
   rules:
   - required
   - boolean
+  - in:true,false
 - name: Difficulty
   name_translations:
     uk: Складність
@@ -359,6 +360,7 @@ variables:
   rules:
   - required
   - boolean
+  - in:true,false
 - name: PVP
   name_translations:
     uk: PVP
@@ -374,6 +376,7 @@ variables:
   rules:
   - required
   - boolean
+  - in:true,false
 - name: View Distance
   name_translations:
     uk: Дальність огляду
@@ -440,6 +443,7 @@ variables:
   rules:
   - required
   - boolean
+  - in:true,false
 - name: Command Blocks
   name_translations:
     uk: Командні блоки
@@ -455,6 +459,7 @@ variables:
   rules:
   - required
   - boolean
+  - in:true,false
 - name: Level Name
   name_translations:
     uk: Назва світу
@@ -519,6 +524,7 @@ variables:
   rules:
   - required
   - boolean
+  - in:true,false
 - name: Hardcore
   name_translations:
     uk: Хардкор
@@ -534,6 +540,7 @@ variables:
   rules:
   - required
   - boolean
+  - in:true,false
 - name: Allow Flight
   name_translations:
     uk: Дозволити політ
@@ -549,6 +556,7 @@ variables:
   rules:
   - required
   - boolean
+  - in:true,false
 - name: Whitelist
   name_translations:
     uk: Білий список
@@ -564,6 +572,7 @@ variables:
   rules:
   - required
   - boolean
+  - in:true,false
 - name: Enforce Whitelist
   name_translations:
     uk: Примусовий білий список
@@ -579,6 +588,7 @@ variables:
   rules:
   - required
   - boolean
+  - in:true,false
 - name: Idle Timeout
   name_translations:
     uk: Тайм-аут бездіяльності
@@ -643,6 +653,7 @@ variables:
   rules:
   - required
   - boolean
+  - in:true,false
 - name: Query
   name_translations:
     uk: Query
@@ -658,6 +669,7 @@ variables:
   rules:
   - required
   - boolean
+  - in:true,false
 - name: RCON
   name_translations:
     uk: RCON
@@ -673,6 +685,7 @@ variables:
   rules:
   - required
   - boolean
+  - in:true,false
 - name: RCON Port
   name_translations:
     uk: Порт RCON
@@ -753,6 +766,7 @@ variables:
   rules:
   - required
   - boolean
+  - in:true,false
 - name: Automatic Core Updates
   name_translations:
     uk: Автоматичні оновлення ядра
@@ -768,3 +782,4 @@ variables:
   rules:
   - required
   - boolean
+  - in:true,false

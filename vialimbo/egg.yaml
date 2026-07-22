@@ -144,6 +144,7 @@ variables:
   rules:
   - required
   - boolean
+  - in:true,false
 - name: Velocity Secret
   name_translations:
     uk: Секрет Velocity
@@ -176,3 +177,4 @@ variables:
   rules:
   - required
   - boolean
+  - in:true,false
