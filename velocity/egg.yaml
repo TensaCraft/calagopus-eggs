@@ -107,7 +107,7 @@ variables:
   description: Exact stable Velocity version or latest.
   description_translations:
     uk: Точна стабільна версія Velocity або latest.
-  order: 0
+  order: 1
   env_variable: VELOCITY_VERSION
   default_value: latest
   user_viewable: true
@@ -123,7 +123,7 @@ variables:
   description: Exact build number or latest.
   description_translations:
     uk: Точний номер збірки або latest.
-  order: 1
+  order: 2
   env_variable: VELOCITY_BUILD
   default_value: latest
   user_viewable: true
@@ -139,7 +139,7 @@ variables:
   description: Installed proxy jar filename.
   description_translations:
     uk: Назва jar-файлу проксі.
-  order: 2
+  order: 3
   env_variable: SERVER_JARFILE
   default_value: velocity.jar
   user_viewable: true
@@ -155,7 +155,7 @@ variables:
   description: Message shown in the server list.
   description_translations:
     uk: Текст у списку серверів.
-  order: 3
+  order: 4
   env_variable: MOTD
   default_value: A Velocity Proxy
   user_viewable: true
@@ -171,7 +171,7 @@ variables:
   description: Player count displayed by the proxy.
   description_translations:
     uk: Кількість гравців, яку показує проксі.
-  order: 4
+  order: 5
   env_variable: MAX_PLAYERS
   default_value: '500'
   user_viewable: true
@@ -188,7 +188,7 @@ variables:
   description: Authenticate players at the proxy.
   description_translations:
     uk: Перевіряти гравців на проксі.
-  order: 5
+  order: 6
   env_variable: ONLINE_MODE
   default_value: 'true'
   user_viewable: true
@@ -204,7 +204,7 @@ variables:
   description: Velocity player information forwarding mode.
   description_translations:
     uk: Режим передачі даних гравців Velocity.
-  order: 6
+  order: 7
   env_variable: FORWARDING_MODE
   default_value: modern
   user_viewable: true
@@ -220,7 +220,7 @@ variables:
   description: Secret shared with backend servers.
   description_translations:
     uk: Секрет, спільний із backend-серверами.
-  order: 7
+  order: 8
   env_variable: VELOCITY_SECRET
   default_value: change-me-now
   user_viewable: true
@@ -237,7 +237,7 @@ variables:
   description: Check for and install the newest compatible Velocity build before every server start, including fixed Velocity versions.
   description_translations:
     uk: Перед кожним запуском перевіряти й встановлювати найновішу сумісну збірку Velocity, зокрема для фіксованих версій.
-  order: 8
+  order: 9
   env_variable: AUTO_UPDATE
   default_value: 'true'
   user_viewable: true

@@ -242,7 +242,7 @@ variables:
   description: Minecraft version used to select a stable NeoForge release, or latest.
   description_translations:
     uk: Версія Minecraft для вибору стабільного NeoForge release або latest.
-  order: 0
+  order: 1
   env_variable: MINECRAFT_VERSION
   default_value: 1.21.1
   user_viewable: true
@@ -258,7 +258,7 @@ variables:
   description: Exact NeoForge version or latest stable for Minecraft.
   description_translations:
     uk: Точна версія NeoForge або latest стабільна для Minecraft.
-  order: 1
+  order: 2
   env_variable: NEOFORGE_VERSION
   default_value: latest
   user_viewable: true
@@ -274,7 +274,7 @@ variables:
   description: Message shown in the server list.
   description_translations:
     uk: Текст у списку серверів.
-  order: 2
+  order: 3
   env_variable: MOTD
   default_value: A Minecraft Server
   user_viewable: true
@@ -290,7 +290,7 @@ variables:
   description: Maximum simultaneous players.
   description_translations:
     uk: Максимальна кількість одночасних гравців.
-  order: 3
+  order: 4
   env_variable: MAX_PLAYERS
   default_value: '20'
   user_viewable: true
@@ -307,7 +307,7 @@ variables:
   description: Authenticate players with Mojang services.
   description_translations:
     uk: Перевіряти гравців через сервіси Mojang.
-  order: 4
+  order: 5
   env_variable: ONLINE_MODE
   default_value: 'true'
   user_viewable: true
@@ -323,7 +323,7 @@ variables:
   description: World difficulty.
   description_translations:
     uk: Складність світу.
-  order: 5
+  order: 6
   env_variable: DIFFICULTY
   default_value: normal
   user_viewable: true
@@ -339,7 +339,7 @@ variables:
   description: Default game mode.
   description_translations:
     uk: Стандартний режим гри.
-  order: 6
+  order: 7
   env_variable: GAMEMODE
   default_value: survival
   user_viewable: true
@@ -355,7 +355,7 @@ variables:
   description: Force the default game mode when players join.
   description_translations:
     uk: Примусово застосовувати стандартний режим при вході.
-  order: 7
+  order: 8
   env_variable: FORCE_GAMEMODE
   default_value: 'false'
   user_viewable: true
@@ -371,7 +371,7 @@ variables:
   description: Allow player-versus-player combat.
   description_translations:
     uk: Дозволити бої між гравцями.
-  order: 8
+  order: 9
   env_variable: PVP
   default_value: 'true'
   user_viewable: true
@@ -387,7 +387,7 @@ variables:
   description: Chunk view distance.
   description_translations:
     uk: Дальність огляду в чанках.
-  order: 9
+  order: 10
   env_variable: VIEW_DISTANCE
   default_value: '10'
   user_viewable: true
@@ -404,7 +404,7 @@ variables:
   description: Chunk simulation distance.
   description_translations:
     uk: Дальність симуляції в чанках.
-  order: 10
+  order: 11
   env_variable: SIMULATION_DISTANCE
   default_value: '10'
   user_viewable: true
@@ -421,7 +421,7 @@ variables:
   description: Spawn protection radius in blocks.
   description_translations:
     uk: Радіус захисту спавну в блоках.
-  order: 11
+  order: 12
   env_variable: SPAWN_PROTECTION
   default_value: '16'
   user_viewable: true
@@ -438,7 +438,7 @@ variables:
   description: Enable the Nether dimension.
   description_translations:
     uk: Увімкнути вимір Незеру.
-  order: 12
+  order: 13
   env_variable: ALLOW_NETHER
   default_value: 'true'
   user_viewable: true
@@ -454,7 +454,7 @@ variables:
   description: Enable command blocks.
   description_translations:
     uk: Увімкнути командні блоки.
-  order: 13
+  order: 14
   env_variable: ENABLE_COMMAND_BLOCK
   default_value: 'false'
   user_viewable: true
@@ -470,7 +470,7 @@ variables:
   description: World directory name.
   description_translations:
     uk: Назва каталогу світу.
-  order: 14
+  order: 15
   env_variable: LEVEL_NAME
   default_value: world
   user_viewable: true
@@ -487,7 +487,7 @@ variables:
   description: Optional world generation seed.
   description_translations:
     uk: Необов'язковий seed генерації світу.
-  order: 15
+  order: 16
   env_variable: LEVEL_SEED
   default_value: ''
   user_viewable: true
@@ -503,7 +503,7 @@ variables:
   description: World generator type or preset.
   description_translations:
     uk: Тип або preset генератора світу.
-  order: 16
+  order: 17
   env_variable: LEVEL_TYPE
   default_value: minecraft:normal
   user_viewable: true
@@ -519,7 +519,7 @@ variables:
   description: Generate villages and other structures.
   description_translations:
     uk: Генерувати села та інші структури.
-  order: 17
+  order: 18
   env_variable: GENERATE_STRUCTURES
   default_value: 'true'
   user_viewable: true
@@ -535,7 +535,7 @@ variables:
   description: Enable hardcore mode.
   description_translations:
     uk: Увімкнути хардкорний режим.
-  order: 18
+  order: 19
   env_variable: HARDCORE
   default_value: 'false'
   user_viewable: true
@@ -551,7 +551,7 @@ variables:
   description: Allow flight without automatic kicks.
   description_translations:
     uk: Дозволити політ без автоматичного відключення.
-  order: 19
+  order: 20
   env_variable: ALLOW_FLIGHT
   default_value: 'false'
   user_viewable: true
@@ -567,7 +567,7 @@ variables:
   description: Enable the player whitelist.
   description_translations:
     uk: Увімкнути білий список гравців.
-  order: 20
+  order: 21
   env_variable: WHITE_LIST
   default_value: 'false'
   user_viewable: true
@@ -583,7 +583,7 @@ variables:
   description: Disconnect online players removed from the whitelist.
   description_translations:
     uk: Відключати онлайн-гравців, видалених із білого списку.
-  order: 21
+  order: 22
   env_variable: ENFORCE_WHITELIST
   default_value: 'false'
   user_viewable: true
@@ -599,7 +599,7 @@ variables:
   description: Minutes before an idle player is disconnected; 0 disables it.
   description_translations:
     uk: Хвилини до відключення неактивного гравця; 0 вимикає.
-  order: 22
+  order: 23
   env_variable: PLAYER_IDLE_TIMEOUT
   default_value: '0'
   user_viewable: true
@@ -616,7 +616,7 @@ variables:
   description: Watchdog threshold in milliseconds; -1 disables it.
   description_translations:
     uk: Поріг watchdog у мілісекундах; -1 вимикає.
-  order: 23
+  order: 24
   env_variable: MAX_TICK_TIME
   default_value: '60000'
   user_viewable: true
@@ -632,7 +632,7 @@ variables:
   description: Network packet compression threshold; -1 disables compression.
   description_translations:
     uk: Поріг стиснення мережевих пакетів; -1 вимикає.
-  order: 24
+  order: 25
   env_variable: NETWORK_COMPRESSION_THRESHOLD
   default_value: '256'
   user_viewable: true
@@ -648,7 +648,7 @@ variables:
   description: Require Mojang-signed player public keys.
   description_translations:
     uk: Вимагати підписані Mojang публічні ключі гравців.
-  order: 25
+  order: 26
   env_variable: ENFORCE_SECURE_PROFILE
   default_value: 'true'
   user_viewable: true
@@ -664,7 +664,7 @@ variables:
   description: Enable the GameSpy query listener on the primary port.
   description_translations:
     uk: Увімкнути GameSpy query на основному порту.
-  order: 26
+  order: 27
   env_variable: ENABLE_QUERY
   default_value: 'false'
   user_viewable: true
@@ -680,7 +680,7 @@ variables:
   description: Enable remote console access.
   description_translations:
     uk: Увімкнути віддалений доступ до консолі.
-  order: 27
+  order: 28
   env_variable: ENABLE_RCON
   default_value: 'false'
   user_viewable: true
@@ -696,7 +696,7 @@ variables:
   description: Allocated RCON port.
   description_translations:
     uk: Виділений порт RCON.
-  order: 28
+  order: 29
   env_variable: RCON_PORT
   default_value: '25575'
   user_viewable: true
@@ -713,7 +713,7 @@ variables:
   description: Password used when RCON is enabled.
   description_translations:
     uk: Пароль для увімкненого RCON.
-  order: 29
+  order: 30
   env_variable: RCON_PASSWORD
   default_value: change-me-now
   user_viewable: true
@@ -730,7 +730,7 @@ variables:
   description: Optional direct resource-pack download URL.
   description_translations:
     uk: Необов'язковий прямий URL ресурспаку.
-  order: 30
+  order: 31
   env_variable: RESOURCE_PACK_URL
   default_value: ''
   user_viewable: true
@@ -745,7 +745,7 @@ variables:
   description: Optional lowercase SHA-1 checksum for the resource pack.
   description_translations:
     uk: Необов'язкова SHA-1 сума ресурспаку малими літерами.
-  order: 31
+  order: 32
   env_variable: RESOURCE_PACK_SHA1
   default_value: ''
   user_viewable: true
@@ -761,7 +761,7 @@ variables:
   description: Require clients to accept the resource pack.
   description_translations:
     uk: Вимагати від клієнтів прийняти ресурспак.
-  order: 32
+  order: 33
   env_variable: RESOURCE_PACK_REQUIRED
   default_value: 'false'
   user_viewable: true
@@ -777,7 +777,7 @@ variables:
   description: Check for and install the newest compatible NeoForge build before every server start, including fixed Minecraft versions.
   description_translations:
     uk: Перед кожним запуском перевіряти й встановлювати найновішу сумісну збірку NeoForge, зокрема для фіксованих версій Minecraft.
-  order: 33
+  order: 34
   env_variable: AUTO_UPDATE
   default_value: 'true'
   user_viewable: true
